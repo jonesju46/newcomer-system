@@ -1,4 +1,3 @@
-const STORAGE_KEY="newcomerRecords_v3_1";
 const cityDistricts={
 "台北市":["中正區","大同區","中山區","松山區","大安區","萬華區","信義區","士林區","北投區","內湖區","南港區","文山區"],
 "新北市":["板橋區","中和區","永和區","新莊區","三重區","蘆洲區","土城區","樹林區","鶯歌區","三峽區","新店區","汐止區","淡水區","林口區","五股區","泰山區","八里區","深坑區","石碇區","坪林區","瑞芳區","平溪區","雙溪區","貢寮區","金山區","萬里區","石門區","烏來區"],
@@ -18,6 +17,8 @@ const cityDistricts={
 "花蓮縣":["花蓮市","鳳林鎮","玉里鎮","新城鄉","吉安鄉","壽豐鄉"],
 "台東縣":["台東市","成功鎮","關山鎮","卑南鄉","鹿野鄉","池上鄉"],
 "澎湖縣":["馬公市","湖西鄉","白沙鄉","西嶼鄉","望安鄉","七美鄉"],"金門縣":["金城鎮","金湖鎮","金沙鎮","金寧鄉","烈嶼鄉"],"連江縣":["南竿鄉","北竿鄉","莒光鄉","東引鄉"],"其他":["其他"]};
+
+const STORAGE_KEY="newcomerRecords_v3_2";
 const $=id=>document.getElementById(id);
 function getRecords(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]")}
 function saveRecords(records){localStorage.setItem(STORAGE_KEY,JSON.stringify(records))}

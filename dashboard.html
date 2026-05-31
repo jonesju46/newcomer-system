@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>新人留名｜統計管理</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header>
+  <h1>新人留名統計管理</h1>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>組長 / 區長 / 主官檢視</h2>
+
+    <div class="tab-bar">
+      <button id="dashboardTab" class="tab active" type="button">統計儀表板</button>
+      <button id="listTab" class="tab" type="button">新人名單</button>
+    </div>
+  </section>
+
+  <section id="dashboardPanel">
+    <section class="card">
+      <h2>統計儀表板</h2>
+
+      <div class="summary-grid">
+        <div class="summary"><span id="weekCount">0</span><small>本週新人</small></div>
+        <div class="summary"><span id="monthCount">0</span><small>本月新人</small></div>
+        <div class="summary"><span id="totalCount">0</span><small>總新人數</small></div>
+        <div class="summary"><span id="returnCount">0</span><small>願意再來</small></div>
+        <div class="summary"><span id="actualReturnCount">0</span><small>實際再來</small></div>
+        <div class="summary"><span id="bibleStudyCount">0</span><small>願意陪讀</small></div>
+        <div class="summary"><span id="actualBibleStudyCount">0</span><small>實際陪讀</small></div>
+      </div>
+    </section>
+
+    <section class="card"><h2>北部教區分布</h2><div id="churchAreaStats"></div></section>
+    <section class="card"><h2>年齡分布</h2><div id="ageStats"></div></section>
+    <section class="card"><h2>縣市分布</h2><div id="cityStats"></div></section>
+    <section class="card"><h2>行政區 TOP 10</h2><div id="districtStats"></div></section>
+    <section class="card"><h2>新人來源統計</h2><div id="reasonStats"></div></section>
+    <section class="card"><h2>新人需求統計</h2><div id="needStats"></div></section>
+    <section class="card"><h2>來過次數統計</h2><div id="visitTimesStats"></div></section>
+  </section>
+
+  <section id="listPanel" class="hidden">
+    <section class="card">
+      <div class="toolbar">
+        <h2>新人名單</h2>
+        <input type="search" id="searchInput" placeholder="搜尋姓名 / 縣市 / 行政區 / 區域 / 邀約人 / 接待人">
+      </div>
+
+      <div class="actions">
+        <button id="exportCsv">匯出 CSV</button>
+        <button id="clearAll" class="danger">清空全部</button>
+      </div>
+
+      <div id="recordList" class="record-list"></div>
+    </section>
+  </section>
+</main>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
