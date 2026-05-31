@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>新人留名｜留名紀錄</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header>
+  <h1>新人留名系統</h1>
+  <nav>
+    <a class="active" href="index.html">留名紀錄</a>
+    <a href="stats.html">統計</a>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>新人留名紀錄</h2>
+
+    <form id="newcomerForm">
+      <label>日期
+        <input type="date" id="visitDate" required>
+      </label>
+
+      <label>姓名
+        <input type="text" id="name" placeholder="請輸入新人姓名" required>
+      </label>
+
+      <label>性別
+        <select id="gender">
+          <option value="">請選擇</option>
+          <option>男</option>
+          <option>女</option>
+        </select>
+      </label>
+
+      <label>年齡層
+        <select id="ageGroup">
+          <option value="">請選擇</option>
+          <option>12歲以下</option>
+          <option>13-18歲</option>
+          <option>19-25歲</option>
+          <option>26-35歲</option>
+          <option>36-45歲</option>
+          <option>46-60歲</option>
+          <option>60歲以上</option>
+        </select>
+      </label>
+
+      <label>居住地
+        <input type="text" id="addressArea" placeholder="例：桃園、中壢、台北">
+      </label>
+
+      <label>所屬區域
+        <select id="churchArea">
+          <option value="">請選擇</option>
+          <option>北部教區1區</option>
+          <option>北部教區2區</option>
+          <option>北部教區3區</option>
+          <option>北部教區4區</option>
+          <option>管制區</option>
+          <option>其他</option>
+        </select>
+      </label>
+
+      <label>邀約人 / 接待人
+        <input type="text" id="inviter" placeholder="例：王弟兄、李姊妹">
+      </label>
+
+      <label>來教會原因
+        <select id="reason">
+          <option value="">請選擇</option>
+          <option>親友邀請</option>
+          <option>網路資訊</option>
+          <option>路過 / 活動</option>
+          <option>尋求信仰</option>
+          <option>需要禱告</option>
+          <option>其他</option>
+        </select>
+      </label>
+
+      <label>新人需求
+        <select id="need">
+          <option value="">請選擇</option>
+          <option>認識信仰</option>
+          <option>需要禱告</option>
+          <option>家庭關係</option>
+          <option>工作 / 學業</option>
+          <option>身心壓力</option>
+          <option>陪讀聖經</option>
+          <option>其他</option>
+        </select>
+      </label>
+
+      <div class="checks">
+        <label><input type="checkbox" id="willingReturn"> 願意再來</label>
+        <label><input type="checkbox" id="actuallyReturned"> 實際有再來</label>
+        <label><input type="checkbox" id="willingBibleStudy"> 願意接受陪讀</label>
+        <label><input type="checkbox" id="actualBibleStudy"> 實際接受陪讀</label>
+      </div>
+
+      <label>備註
+        <textarea id="note" rows="3" placeholder="可記錄代禱事項、跟進狀況"></textarea>
+      </label>
+
+      <button type="submit" class="primary">新增留名紀錄</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="toolbar">
+      <h2>紀錄列表</h2>
+      <input type="search" id="searchInput" placeholder="搜尋姓名 / 地區 / 邀約人">
+    </div>
+
+    <div class="actions">
+      <button id="exportCsv">匯出 CSV</button>
+      <button id="clearAll" class="danger">清空全部</button>
+    </div>
+
+    <div id="recordList" class="record-list"></div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
