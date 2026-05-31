@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>新人留名</title>
+    <link rel="stylesheet" href="styles.css?v=20260531-3" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">教會主日聚會</p>
+        <h1>新人留名</h1>
+      </div>
+      <div class="header-actions">
+        <a class="text-button page-link" href="leader.html">幹部簽到</a>
+        <a class="text-button page-link" href="dashboard.html">管理者統計</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="checkin-section public-checkin" aria-label="新人留名表單">
+        <div class="section-heading">
+          <h2>新人留名卡</h2>
+          <span>請依序填寫資料</span>
+        </div>
+
+        <form id="newcomerCheckin" class="checkin-form active newcomer-card-form">
+          <div class="newcomer-card-grid">
+            <section class="paper-card newcomer-profile-card" aria-label="新人留名卡">
+              <h3>新人留名卡</h3>
+              <div class="paper-grid profile-grid">
+                <div class="field district-field"><label for="newDistrict">單位 / 北部教區</label><select id="newDistrict" name="district" required><option>1區</option><option>2區</option><option>3區</option><option>4區</option><option>管制區</option></select></div>
+                <div class="field"><label for="newGroup">小組</label><input id="newGroup" name="group" type="text" /></div>
+                <div class="field date-field"><label for="newDate">填表日期</label><input id="newDate" name="date" type="date" required /></div>
+                <div class="field name-field"><label for="newName">姓名</label><input id="newName" name="name" type="text" required /></div>
+                <div class="field"><label for="newGender">性別</label><select id="newGender" name="gender"><option>男</option><option>女</option><option>未填寫</option></select></div>
+                <div class="field"><label for="newBirthDate">出生日期</label><input id="newBirthDate" name="birthDate" type="date" /></div>
+                <div class="field age-field"><label for="newAge">年齡區間</label><select id="newAge" name="age" required></select></div>
+
+                <fieldset class="paper-fieldset span-all">
+                  <legend>語言程度（可重複勾選）</legend>
+                  <label><input type="checkbox" name="languages" value="國語" /> 國語</label>
+                  <label><input type="checkbox" name="languages" value="台語" /> 台語</label>
+                  <label><input type="checkbox" name="languages" value="原住民語" /> 原住民語</label>
+                  <label><input type="checkbox" name="languages" value="英語" /> 英語</label>
+                  <label><input type="checkbox" name="languages" value="其他" /> 其他</label>
+                </fieldset>
+
+                <div class="field"><label for="newEducation">教育程度</label><input id="newEducation" name="education" type="text" /></div>
+                <div class="field"><label for="newOccupation">職業</label><input id="newOccupation" name="occupation" type="text" /></div>
+                <div class="field"><label for="newReligion">宗教信仰</label><input id="newReligion" name="religion" type="text" /></div>
+                <div class="field ethnicity-field">
+                  <label for="newEthnicity">族群</label>
+                  <select id="newEthnicity" name="ethnicity" required>
+                    <option>非原住民</option>
+                    <option>阿美族</option>
+                    <option>泰雅族</option>
+                    <option>排灣族</option>
+                    <option>布農族</option>
+                    <option>卑南族</option>
+                    <option>魯凱族</option>
+                    <option>鄒族</option>
+                    <option>賽夏族</option>
+                    <option>雅美族</option>
+                    <option>邵族</option>
+                    <option>噶瑪蘭族</option>
+                    <option>太魯閣族</option>
+                    <option>撒奇萊雅族</option>
+                    <option>賽德克族</option>
+                    <option>拉阿魯哇族</option>
+                    <option>卡那卡那富族</option>
+                  </select>
+                </div>
+                <div class="field"><label for="newHomePhone">聯絡電話（家）</label><input id="newHomePhone" name="homePhone" type="tel" /></div>
+                <div class="field"><label for="newMobile">行動電話</label><input id="newMobile" name="mobile" type="tel" /></div>
+                <div class="field span-all"><label for="newEmail">電子郵件信箱</label><input id="newEmail" name="email" type="email" /></div>
+                <div class="field city-field"><label for="newResidenceCity">居住縣市</label><select id="newResidenceCity" name="residenceCity" required></select></div>
+                <div class="field residence-district-field"><label for="newResidenceDistrict">居住區域</label><select id="newResidenceDistrict" name="residenceDistrict" required></select></div>
+                <div class="field span-all"><label for="newAddress">地址</label><input id="newAddress" name="address" type="text" /></div>
+
+                <fieldset class="paper-fieldset span-all">
+                  <legend>何時最方便與您聯絡（可重複勾選）</legend>
+                  <label><input type="checkbox" name="contactDays" value="週一" /> 週一</label>
+                  <label><input type="checkbox" name="contactDays" value="週二" /> 週二</label>
+                  <label><input type="checkbox" name="contactDays" value="週三" /> 週三</label>
+                  <label><input type="checkbox" name="contactDays" value="週四" /> 週四</label>
+                  <label><input type="checkbox" name="contactDays" value="週五" /> 週五</label>
+                  <label><input type="checkbox" name="contactDays" value="週六" /> 週六</label>
+                  <label><input type="checkbox" name="contactDays" value="週日" /> 週日</label>
+                </fieldset>
+
+                <fieldset class="paper-fieldset span-all">
+                  <legend>何時最方便與您聯絡（大約幾點之間）</legend>
+                  <label><input type="checkbox" name="contactTimes" value="上午" /> 上午</label>
+                  <label><input type="checkbox" name="contactTimes" value="下午" /> 下午</label>
+                  <label><input type="checkbox" name="contactTimes" value="晚上" /> 晚上</label>
+                </fieldset>
+
+                <div class="field invite-field"><label for="newInviter">邀請人</label><input id="newInviter" name="inviter" type="text" placeholder="雅各" /></div>
+                <div class="field"><label for="newCounselor">陪談人</label><input id="newCounselor" name="counselor" type="text" /></div>
+                <div class="field"><label for="newFollowupPerson">跟進人</label><input id="newFollowupPerson" name="followupPerson" type="text" /></div>
+                <div class="field rank-field"><label for="newRank">邀請人級職</label><input id="newRank" name="rank" type="text" placeholder="精兵戰士" /></div>
+              </div>
+            </section>
+
+            <section class="paper-card newcomer-question-card" aria-label="聚會問卷">
+              <p class="welcome-copy">
+                親愛的新朋友平安，歡迎您來到中央教會總部。以下幾個問題，盼望您願意配合回答，使我們更瞭解您，並更進一步幫助您。
+              </p>
+
+              <h3>聚會前</h3>
+              <div class="paper-question-list">
+                <div class="question-row"><label>您曾經去過教會嗎？</label><select name="visitedChurch"><option>是</option><option>否</option></select></div>
+                <div class="field"><label for="newVisitedWhen">何時？</label><input id="newVisitedWhen" name="visitedWhen" type="text" /></div>
+                <div class="field"><label for="newVisitedPlace">地點（教會名稱）</label><input id="newVisitedPlace" name="visitedPlace" type="text" /></div>
+                <div class="field"><label for="newReason">教會給您的第一印象是？</label><textarea id="newReason" name="reason" required></textarea></div>
+                <div class="question-row"><label>您目前有宗教信仰嗎？</label><select name="hasFaith"><option>是</option><option>否</option></select></div>
+                <div class="field"><label for="newFaithDuration">宗教信仰為？信仰多久？</label><input id="newFaithDuration" name="faithDuration" type="text" /></div>
+                <div class="field"><label for="newFaithHelp">信仰能帶給您什麼幫助？</label><input id="newFaithHelp" name="faithHelp" type="text" /></div>
+                <div class="field"><label for="newLifeDifficulty">您生活中正面臨哪些困難？</label><input id="newLifeDifficulty" name="lifeDifficulty" type="text" /></div>
+              </div>
+
+              <h3>聚會後</h3>
+              <div class="paper-question-list">
+                <div class="question-row"><label for="newWillingReturn">今天到教會開心嗎？</label><select id="newWillingReturn" name="willingReturn"><option>是</option><option>還可以</option><option>否</option></select></div>
+                <div class="field"><label for="newFavoritePart">今天到教會最喜歡的部分是？</label><input id="newFavoritePart" name="favoritePart" type="text" /></div>
+                <div class="field"><label for="newWantLearn">對於教會想更瞭解或學習的地方？</label><input id="newWantLearn" name="wantLearn" type="text" /></div>
+                <div class="field"><label for="newUnclearPart">對於教會不太瞭解的地方？</label><input id="newUnclearPart" name="unclearPart" type="text" /></div>
+                <div class="field"><label for="newNeeds">需要提供幫助或代禱的地方？</label><textarea id="newNeeds" name="needs"></textarea></div>
+                <div class="question-row"><label for="newWillingStudy">是否願意接受陪讀</label><select id="newWillingStudy" name="willingStudy"><option>是</option><option>否</option></select></div>
+                <div class="question-row"><label for="newBeginnerClass">是否願意報名初訓班</label><select id="newBeginnerClass" name="beginnerClass"><option>否</option><option>是</option></select></div>
+              </div>
+            </section>
+          </div>
+          <input id="newVisits" name="visits" type="hidden" value="1" />
+          <input id="newActualReturn" name="actualReturn" type="hidden" value="否" />
+          <input id="newActualStudy" name="actualStudy" type="hidden" value="否" />
+          <div class="form-actions">
+            <button class="primary-button" type="submit">送出新人留名</button>
+            <span id="newcomerMessage" class="form-message" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+
+      <section id="confirmSection" class="checkin-section confirm-section view-hidden" aria-label="確認簽到紀錄">
+        <div class="section-heading">
+          <h2>新人留名已存檔</h2>
+          <span>請確認資料是否有打錯</span>
+        </div>
+        <div id="confirmSummary" class="confirm-summary"></div>
+        <div class="form-actions">
+          <button id="editRecordButton" class="text-button" type="button">修改</button>
+          <button id="backHomeButton" class="text-button" type="button">回新人留名</button>
+          <span id="confirmMessage" class="form-message" aria-live="polite"></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="config.js?v=20260531-3"></script>
+    <script src="checkin.js?v=20260531-3"></script>
+  </body>
+</html>

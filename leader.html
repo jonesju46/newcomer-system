@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>幹部簽到</title>
+    <link rel="stylesheet" href="styles.css?v=20260531-3" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">教會主日聚會</p>
+        <h1>幹部簽到</h1>
+      </div>
+      <div class="header-actions">
+        <a class="text-button page-link" href="newcomer.html">新人留名</a>
+        <a class="text-button page-link" href="dashboard.html">管理者統計</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="checkin-section public-checkin" aria-label="幹部簽到表單">
+        <div class="section-heading">
+          <h2>幹部簽到登錄</h2>
+          <span>星期三小組、星期五幹訓、星期日主日</span>
+        </div>
+
+        <form id="leaderCheckin" class="checkin-form active">
+          <div class="form-grid leader-grid">
+            <div class="field"><label for="leaderDate">日期</label><input id="leaderDate" name="date" type="date" required /></div>
+            <div class="field"><label for="leaderName">姓名</label><input id="leaderName" name="name" type="text" required /></div>
+            <div class="field"><label for="leaderRole">級職</label><select id="leaderRole" name="role" required><option>區參謀</option><option>組長</option><option>戰士精兵</option><option>榮譽精兵</option><option>會友</option></select></div>
+            <div class="field"><label for="leaderMeetingType">聚會類型</label><select id="leaderMeetingType" name="meetingType" required><option>小組聚會</option><option>幹部訓練</option><option>主日聚會</option></select></div>
+            <div class="field"><label for="leaderDistrict">北部教區</label><select id="leaderDistrict" name="district" required><option>1區</option><option>2區</option><option>3區</option><option>4區</option><option>管制區</option></select></div>
+            <div class="field"><label for="leaderStatus">出席狀態</label><select id="leaderStatus" name="status"><option>出席</option><option>請假</option></select></div>
+          </div>
+          <div class="form-actions">
+            <button class="primary-button" type="submit">送出幹部簽到</button>
+            <span id="leaderMessage" class="form-message" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+
+      <section id="confirmSection" class="checkin-section confirm-section view-hidden" aria-label="確認簽到紀錄">
+        <div class="section-heading">
+          <h2>幹部簽到已存檔</h2>
+          <span>請確認資料是否有打錯</span>
+        </div>
+        <div id="confirmSummary" class="confirm-summary"></div>
+        <div class="form-actions">
+          <button id="editRecordButton" class="text-button" type="button">修改</button>
+          <button id="backHomeButton" class="text-button" type="button">回幹部簽到</button>
+          <span id="confirmMessage" class="form-message" aria-live="polite"></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="config.js?v=20260531-3"></script>
+    <script src="checkin.js?v=20260531-3"></script>
+  </body>
+</html>

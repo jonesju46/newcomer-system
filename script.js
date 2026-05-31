@@ -43,6 +43,16 @@ let selectedLeaderMeetingType = "主日聚會";
 let rangeCalendarOpen = false;
 
 const $ = (id) => document.getElementById(id);
+const sheetsConfig = window.CHURCH_SHEETS_CONFIG || {};
+
+function googleSheetsEnabled() {
+  return Boolean(sheetsConfig.webAppUrl && sheetsConfig.webAppUrl.startsWith("https://script.google.com/"));
+}
+
+function recordId(prefix) {
+  if (window.crypto?.randomUUID) return `${prefix}-${window.crypto.randomUUID()}`;
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
@@ -64,6 +74,86 @@ function saveData() {
   if ("BroadcastChannel" in window) {
     new BroadcastChannel("churchDashboardData").postMessage({ type: "updated" });
   }
+}
+
+function rebuildServicesFromNewcomers(newcomers) {
+  const counts = new Map();
+  newcomers.forEach((row) => {
+    if (!row.date) return;
+    counts.set(row.date, (counts.get(row.date) || 0) + 1);
+  });
+  return [...counts.entries()]
+    .map(([date, attendance]) => ({ date, attendance }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function normalizeRemoteData(payload) {
+  const newcomers = Array.isArray(payload?.newcomers) ? payload.newcomers : [];
+  const leaders = Array.isArray(payload?.leaders) ? payload.leaders : [];
+  return {
+    services: rebuildServicesFromNewcomers(newcomers),
+    newcomers,
+    leaders
+  };
+}
+
+function fetchGoogleSheetData() {
+  if (!googleSheetsEnabled()) return Promise.resolve(null);
+  return new Promise((resolve, reject) => {
+    const callbackName = `churchSheetsCallback_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const separator = sheetsConfig.webAppUrl.includes("?") ? "&" : "?";
+    const script = document.createElement("script");
+    const timeout = window.setTimeout(() => {
+      cleanup();
+      reject(new Error("Google Sheets read timeout"));
+    }, 12000);
+
+    function cleanup() {
+      window.clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
+    }
+
+    window[callbackName] = (payload) => {
+      cleanup();
+      resolve(payload);
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Google Sheets read failed"));
+    };
+    script.src = `${sheetsConfig.webAppUrl}${separator}action=list&callback=${callbackName}&v=${Date.now()}`;
+    document.body.appendChild(script);
+  });
+}
+
+async function syncGoogleSheetData() {
+  try {
+    const payload = await fetchGoogleSheetData();
+    if (!payload?.ok) return;
+    state = normalizeRemoteData(payload);
+    saveData();
+    renderOptions();
+    render();
+  } catch (error) {
+    console.warn("Google Sheets load failed", error);
+  }
+}
+
+function sendRecordToGoogleSheet(type, record) {
+  if (!googleSheetsEnabled()) return;
+  const body = new URLSearchParams({
+    type,
+    record: JSON.stringify(record)
+  });
+  fetch(sheetsConfig.webAppUrl, {
+    method: "POST",
+    mode: "no-cors",
+    body
+  }).catch((error) => {
+    console.warn("Google Sheets sync failed", error);
+  });
 }
 
 function today() {
@@ -1012,14 +1102,18 @@ function setupCheckins() {
   $("newcomerCheckin").addEventListener("submit", (event) => {
     event.preventDefault();
     const data = formToObject(event.currentTarget);
-    state.newcomers.push({
+    const record = {
       ...data,
+      id: recordId("newcomer"),
+      createdAt: new Date().toISOString(),
       residence: `${data.residenceCity}-${data.residenceDistrict}`,
       age: data.age,
       visits: Number(data.visits || 1),
-    });
+    };
+    state.newcomers.push(record);
     syncServiceAttendance(data.date);
     saveData();
+    sendRecordToGoogleSheet("newcomer", record);
     renderOptions();
     render();
     clearForm(event.currentTarget);
@@ -1028,10 +1122,15 @@ function setupCheckins() {
 
   $("leaderCheckin").addEventListener("submit", (event) => {
     event.preventDefault();
-    const record = formToObject(event.currentTarget);
+    const record = {
+      ...formToObject(event.currentTarget),
+      id: recordId("leader"),
+      createdAt: new Date().toISOString(),
+    };
     if (!validateLeaderMeetingDate(record)) return;
     state.leaders.push(record);
     saveData();
+    sendRecordToGoogleSheet("leader", record);
     renderOptions();
     render();
     clearForm(event.currentTarget);
@@ -1049,6 +1148,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCalendarMonth();
   updateDashboardView("newcomer");
   render();
+  syncGoogleSheetData();
   ["districtSelect", "searchInput"].forEach((id) => $(id).addEventListener("input", render));
   $("exportButton").addEventListener("click", exportCsv);
   $("csvInput").addEventListener("change", (event) => {

@@ -30,6 +30,16 @@ let editTarget = null;
 let lastSavedRecord = null;
 
 const $ = (id) => document.getElementById(id);
+const sheetsConfig = window.CHURCH_SHEETS_CONFIG || {};
+
+function googleSheetsEnabled() {
+  return Boolean(sheetsConfig.webAppUrl && sheetsConfig.webAppUrl.startsWith("https://script.google.com/"));
+}
+
+function recordId(prefix) {
+  if (window.crypto?.randomUUID) return `${prefix}-${window.crypto.randomUUID()}`;
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 
 function loadData() {
   const saved = localStorage.getItem("churchDashboardData");
@@ -47,6 +57,21 @@ function saveData(state) {
   if ("BroadcastChannel" in window) {
     new BroadcastChannel("churchDashboardData").postMessage({ type: "updated" });
   }
+}
+
+function sendRecordToGoogleSheet(type, record) {
+  if (!googleSheetsEnabled()) return;
+  const body = new URLSearchParams({
+    type,
+    record: JSON.stringify(record)
+  });
+  fetch(sheetsConfig.webAppUrl, {
+    method: "POST",
+    mode: "no-cors",
+    body
+  }).catch((error) => {
+    console.warn("Google Sheets sync failed", error);
+  });
 }
 
 function today() {
@@ -91,6 +116,7 @@ function rebuildServiceAttendance(state) {
 }
 
 function renderResidenceDistricts() {
+  if (!$("newResidenceCity") || !$("newResidenceDistrict")) return;
   const city = $("newResidenceCity").value;
   $("newResidenceDistrict").innerHTML = (residenceAreas[city] || []).map((area) => `<option>${area}</option>`).join("");
 }
@@ -221,6 +247,7 @@ function editLastRecord() {
   editTarget = { type: lastSavedRecord.type, index: lastSavedRecord.index };
   if (editTarget.type === "newcomer") {
     const form = $("newcomerCheckin");
+    if (!form) return;
     const record = lastSavedRecord.record;
     fillForm(form, record);
     $("newResidenceCity").value = record.residenceCity || "新北市";
@@ -230,6 +257,7 @@ function editLastRecord() {
     showHome("newcomerCheckin");
   } else {
     const form = $("leaderCheckin");
+    if (!form) return;
     fillForm(form, lastSavedRecord.record);
     form.querySelector('button[type="submit"]').textContent = "存檔送出";
     showHome("leaderCheckin");
@@ -237,8 +265,8 @@ function editLastRecord() {
 }
 
 function resetSubmitLabel(type) {
-  if (type === "newcomer") $("newcomerCheckin").querySelector('button[type="submit"]').textContent = "送出新人留名";
-  if (type === "leader") $("leaderCheckin").querySelector('button[type="submit"]').textContent = "送出幹部簽到";
+  if (type === "newcomer" && $("newcomerCheckin")) $("newcomerCheckin").querySelector('button[type="submit"]').textContent = "送出新人留名";
+  if (type === "leader" && $("leaderCheckin")) $("leaderCheckin").querySelector('button[type="submit"]').textContent = "送出幹部簽到";
 }
 
 function setupTabs() {
@@ -253,68 +281,87 @@ function setupTabs() {
 }
 
 function setupCheckins() {
-  $("newDate").value = today();
-  $("leaderDate").value = today();
-  syncLeaderMeetingTypeByDate();
-  $("newAge").innerHTML = ageGroups.map((group) => `<option>${group}</option>`).join("");
-  $("newResidenceCity").innerHTML = Object.keys(residenceAreas).map((city) => `<option>${city}</option>`).join("");
-  $("newResidenceCity").value = "新北市";
-  renderResidenceDistricts();
-  $("newResidenceDistrict").value = "板橋區";
-  $("newResidenceCity").addEventListener("change", renderResidenceDistricts);
-  $("leaderDate").addEventListener("change", syncLeaderMeetingTypeByDate);
+  const newcomerForm = $("newcomerCheckin");
+  const leaderForm = $("leaderCheckin");
 
-  $("newcomerCheckin").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const state = loadData();
-    const data = formToObject(event.currentTarget);
-    const record = {
-      ...data,
-      residence: `${data.residenceCity}-${data.residenceDistrict}`,
-      visits: Number(data.visits || 1),
-    };
-    let index;
-    if (editTarget?.type === "newcomer") {
-      index = editTarget.index;
-      state.newcomers[index] = record;
-    } else {
-      state.newcomers.push(record);
-      index = state.newcomers.length - 1;
-    }
-    rebuildServiceAttendance(state);
-    saveData(state);
-    editTarget = null;
+  if (newcomerForm) {
+    $("newDate").value = today();
+    $("newAge").innerHTML = ageGroups.map((group) => `<option>${group}</option>`).join("");
+    $("newResidenceCity").innerHTML = Object.keys(residenceAreas).map((city) => `<option>${city}</option>`).join("");
+    $("newResidenceCity").value = "新北市";
+    renderResidenceDistricts();
+    $("newResidenceDistrict").value = "板橋區";
+    $("newResidenceCity").addEventListener("change", renderResidenceDistricts);
+
+    newcomerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const state = loadData();
+      const data = formToObject(event.currentTarget);
+      const previous = editTarget?.type === "newcomer" ? state.newcomers[editTarget.index] : null;
+      const record = {
+        ...data,
+        id: previous?.id || recordId("newcomer"),
+        createdAt: previous?.createdAt || new Date().toISOString(),
+        residence: `${data.residenceCity}-${data.residenceDistrict}`,
+        visits: Number(data.visits || 1),
+      };
+      let index;
+      if (editTarget?.type === "newcomer") {
+        index = editTarget.index;
+        state.newcomers[index] = record;
+      } else {
+        state.newcomers.push(record);
+        index = state.newcomers.length - 1;
+      }
+      rebuildServiceAttendance(state);
+      saveData(state);
+      sendRecordToGoogleSheet("newcomer", record);
+      editTarget = null;
+      resetSubmitLabel("newcomer");
+      clearForm(event.currentTarget);
+      showSavedRecord("newcomer", record, index);
+    });
+  }
+
+  if (leaderForm) {
+    $("leaderDate").value = today();
+    syncLeaderMeetingTypeByDate();
+    $("leaderDate").addEventListener("change", syncLeaderMeetingTypeByDate);
+
+    leaderForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const state = loadData();
+      const previous = editTarget?.type === "leader" ? state.leaders[editTarget.index] : null;
+      const record = {
+        ...formToObject(event.currentTarget),
+        id: previous?.id || recordId("leader"),
+        createdAt: previous?.createdAt || new Date().toISOString(),
+      };
+      if (!validateLeaderMeetingDate(record)) return;
+      let index;
+      if (editTarget?.type === "leader") {
+        index = editTarget.index;
+        state.leaders[index] = record;
+      } else {
+        state.leaders.push(record);
+        index = state.leaders.length - 1;
+      }
+      saveData(state);
+      sendRecordToGoogleSheet("leader", record);
+      editTarget = null;
+      resetSubmitLabel("leader");
+      clearForm(event.currentTarget);
+      showSavedRecord("leader", record, index);
+    });
+  }
+
+  $("editRecordButton")?.addEventListener("click", editLastRecord);
+  $("backHomeButton")?.addEventListener("click", () => {
     resetSubmitLabel("newcomer");
-    clearForm(event.currentTarget);
-    showSavedRecord("newcomer", record, index);
-  });
-
-  $("leaderCheckin").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const state = loadData();
-    const record = formToObject(event.currentTarget);
-    if (!validateLeaderMeetingDate(record)) return;
-    let index;
-    if (editTarget?.type === "leader") {
-      index = editTarget.index;
-      state.leaders[index] = record;
-    } else {
-      state.leaders.push(record);
-      index = state.leaders.length - 1;
-    }
-    saveData(state);
-    editTarget = null;
-    resetSubmitLabel("leader");
-    clearForm(event.currentTarget);
-    showSavedRecord("leader", record, index);
-  });
-
-  $("editRecordButton").addEventListener("click", editLastRecord);
-  $("backHomeButton").addEventListener("click", () => {
-    resetSubmitLabel("newcomer");
     resetSubmitLabel("leader");
     editTarget = null;
-    showHome("newcomerCheckin");
+    const target = lastSavedRecord?.type === "leader" || !newcomerForm ? "leaderCheckin" : "newcomerCheckin";
+    showHome(target);
   });
 }
 
