@@ -1,67 +1,273 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>新人留名｜統計管理</title>
-  <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
-<header>
-  <h1>新人留名統計管理</h1>
-</header>
-
-<main class="container">
-  <section class="card">
-    <h2>組長 / 區長 / 主官檢視</h2>
-
-    <div class="tab-bar">
-      <button id="dashboardTab" class="tab active" type="button">統計儀表板</button>
-      <button id="listTab" class="tab" type="button">新人名單</button>
-    </div>
-  </section>
-
-  <section id="dashboardPanel">
-    <section class="card">
-      <h2>統計儀表板</h2>
-
-      <div class="summary-grid">
-        <div class="summary"><span id="weekCount">0</span><small>本週新人</small></div>
-        <div class="summary"><span id="monthCount">0</span><small>本月新人</small></div>
-        <div class="summary"><span id="totalCount">0</span><small>總新人數</small></div>
-        <div class="summary"><span id="returnCount">0</span><small>願意再來</small></div>
-        <div class="summary"><span id="actualReturnCount">0</span><small>實際再來</small></div>
-        <div class="summary"><span id="bibleStudyCount">0</span><small>願意陪讀</small></div>
-        <div class="summary"><span id="actualBibleStudyCount">0</span><small>實際陪讀</small></div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>主日聚會統計儀表板</title>
+    <link rel="stylesheet" href="styles.css?v=20260530-9" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">教會主日聚會</p>
+        <h1>管理者統計儀表板</h1>
       </div>
-    </section>
-
-    <section class="card"><h2>北部教區分布</h2><div id="churchAreaStats"></div></section>
-    <section class="card"><h2>年齡分布</h2><div id="ageStats"></div></section>
-    <section class="card"><h2>縣市分布</h2><div id="cityStats"></div></section>
-    <section class="card"><h2>行政區 TOP 10</h2><div id="districtStats"></div></section>
-    <section class="card"><h2>新人來源統計</h2><div id="reasonStats"></div></section>
-    <section class="card"><h2>新人需求統計</h2><div id="needStats"></div></section>
-    <section class="card"><h2>來過次數統計</h2><div id="visitTimesStats"></div></section>
-  </section>
-
-  <section id="listPanel" class="hidden">
-    <section class="card">
-      <div class="toolbar">
-        <h2>新人名單</h2>
-        <input type="search" id="searchInput" placeholder="搜尋姓名 / 縣市 / 行政區 / 區域 / 邀約人 / 接待人">
+      <div class="header-actions" aria-label="資料控制">
+        <label class="icon-button file-button" title="匯入 CSV">
+          <span aria-hidden="true">↑</span>
+          <input id="csvInput" type="file" accept=".csv,text/csv" />
+        </label>
+        <button id="exportButton" class="icon-button" type="button" title="下載目前資料 CSV">↓</button>
       </div>
+    </header>
 
-      <div class="actions">
-        <button id="exportCsv">匯出 CSV</button>
-        <button id="clearAll" class="danger">清空全部</button>
-      </div>
+    <main>
+      <section class="top-tabs" aria-label="管理者統計分類">
+        <button class="tab-button active main-tab" type="button" data-target-view="newcomer">新人</button>
+        <button class="tab-button main-tab" type="button" data-target-view="leader">幹部</button>
+      </section>
 
-      <div id="recordList" class="record-list"></div>
-    </section>
-  </section>
-</main>
+      <section class="toolbar" aria-label="篩選條件">
+        <div class="field">
+          <label for="rangeTypeSelect">統計期間</label>
+          <div class="range-row">
+            <select id="rangeTypeSelect">
+              <option value="month" selected>單月</option>
+              <option value="day">單日</option>
+              <option value="quarter">單季</option>
+              <option value="year">年度</option>
+            </select>
+            <input id="rangeDate" class="range-value-control" type="text" readonly />
+            <div id="rangeDateCalendar" class="range-date-calendar hidden"></div>
+            <input id="rangeMonth" class="range-value-control hidden" type="month" />
+            <select id="rangeQuarter" class="range-value-control hidden"></select>
+            <select id="rangeYear" class="range-value-control hidden"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="districtSelect">北部教區</label>
+          <select id="districtSelect">
+            <option value="all">全部區域</option>
+          </select>
+        </div>
+        <div class="field grow">
+          <label for="searchInput">搜尋新人或幹部</label>
+          <input id="searchInput" type="search" placeholder="輸入姓名、居住地、需求..." />
+        </div>
+        <div class="toolbar-metric leader-view">
+          <span>幹部出席率</span>
+          <strong id="leaderRate">0%</strong>
+          <small id="leaderAbsences">0 次請假</small>
+        </div>
+      </section>
 
-<script src="dashboard.js"></script>
-</body>
+      <section class="kpi-grid" aria-label="總覽指標">
+        <article class="metric newcomer-view">
+          <span>主日總人次</span>
+          <strong id="totalAttendance">0</strong>
+          <small id="periodCount">0 場聚會</small>
+        </article>
+        <article class="metric newcomer-view">
+          <span>新人數</span>
+          <strong id="newcomerCount">0</strong>
+          <small id="returnRate">0% 願意再來</small>
+        </article>
+        <article class="metric newcomer-view">
+          <span>實際再來</span>
+          <strong id="actualReturnCount">0</strong>
+          <small id="actualReturnRate">0%</small>
+        </article>
+        <article class="metric newcomer-view">
+          <span>陪讀跟進</span>
+          <strong id="studyCount">0</strong>
+          <small id="studyActualRate">0% 已實際陪讀</small>
+        </article>
+      </section>
+
+      <section class="dashboard-grid" aria-label="統計圖表">
+        <article class="panel wide newcomer-view">
+          <div class="panel-heading">
+            <h2>人次統計</h2>
+            <span>依主日日期</span>
+          </div>
+          <div id="attendanceChart" class="chart large"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>新人年齡分佈</h2>
+            <span>年齡層</span>
+          </div>
+          <div id="ageChart" class="chart"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>新人族群分佈</h2>
+            <span>族群</span>
+          </div>
+          <div id="ethnicityChart" class="chart"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>新人居住分佈</h2>
+            <span>城市 / 區域</span>
+          </div>
+          <div id="residenceChart" class="chart"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>來過幾次</h2>
+            <span>新人次數</span>
+          </div>
+          <div id="visitChart" class="chart"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>來教會原因</h2>
+            <span>主要原因</span>
+          </div>
+          <div id="reasonChart" class="chart"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>新人需求統計</h2>
+            <span>可多選需求</span>
+          </div>
+          <div id="needChart" class="chart"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>再來與陪讀</h2>
+            <span>意願 / 實際</span>
+          </div>
+          <div id="followupChart" class="chart"></div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>北部教區新人分佈</h2>
+            <span>1-4區與管制區</span>
+          </div>
+          <div id="districtChart" class="chart"></div>
+        </article>
+
+        <article class="panel wide leader-view">
+          <div class="panel-heading">
+            <h2>幹部出席紀錄</h2>
+            <span>依各區與聚會類型統計</span>
+          </div>
+          <div id="leaderChart" class="chart large"></div>
+        </article>
+      </section>
+
+      <section class="data-section newcomer-view record-calendar-section">
+        <div class="record-controls">
+          <div class="field month-field">
+            <label for="newcomerCalendarMonth">新人紀錄月份</label>
+            <input id="newcomerCalendarMonth" type="month" />
+          </div>
+        </div>
+
+        <div class="calendar-panel">
+          <div class="section-heading">
+            <h2 id="newcomerCalendarTitle">新人留名紀錄</h2>
+          </div>
+          <div class="calendar-layout">
+            <div id="newcomerCalendar" class="sunday-calendar"></div>
+            <div class="calendar-actions">
+              <button id="clearNewcomerDateFilter" class="text-button" type="button">顯示整月</button>
+              <span id="newcomerCalendarSummary">0 個主日</span>
+              <strong id="newcomerSelectedDateLabel">目前顯示整月新人紀錄</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="newcomerRecords" class="data-section newcomer-view">
+        <div class="section-heading">
+          <h2>新人留名紀錄</h2>
+          <span id="newcomerTableCount">0 筆</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>姓名</th>
+                <th>教區</th>
+                <th>居住地</th>
+                <th>族群</th>
+                <th>年齡區間</th>
+                <th>來過次數</th>
+                <th>原因 / 狀態</th>
+                <th>邀請人</th>
+                <th>級職</th>
+                <th>需求 / 跟進</th>
+              </tr>
+            </thead>
+            <tbody id="newcomerRecordTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="data-section leader-view record-calendar-section">
+        <div class="record-controls">
+          <div class="field month-field">
+            <label for="leaderCalendarMonth">幹部紀錄月份</label>
+            <input id="leaderCalendarMonth" type="month" />
+          </div>
+        </div>
+
+        <div class="calendar-panel">
+          <div class="section-heading calendar-tab-heading">
+            <h2 id="leaderCalendarTitle">5月</h2>
+            <div class="calendar-tabs" aria-label="幹部聚會紀錄切換">
+              <button class="calendar-tab active" type="button" data-leader-meeting="主日聚會">主日紀錄</button>
+              <button class="calendar-tab" type="button" data-leader-meeting="幹部訓練">幹訓紀錄</button>
+              <button class="calendar-tab" type="button" data-leader-meeting="小組聚會">小組紀錄</button>
+            </div>
+          </div>
+          <div class="calendar-layout">
+            <div id="leaderCalendar" class="sunday-calendar"></div>
+            <div class="calendar-actions">
+              <button id="clearLeaderDateFilter" class="text-button" type="button">顯示整月</button>
+              <span id="leaderCalendarSummary">0 筆紀錄</span>
+              <strong id="leaderSelectedDateLabel">目前顯示整月主日紀錄</strong>
+            </div>
+            <div id="leaderDistrictSummary" class="district-record-summary"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="leaderRecords" class="data-section leader-view leader-record-section">
+        <div class="section-heading">
+          <h2>幹部簽到紀錄</h2>
+          <span id="leaderTableCount">0 筆</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>姓名</th>
+                <th>級職</th>
+                <th>聚會類型</th>
+                <th>教區</th>
+                <th>出席狀態</th>
+              </tr>
+            </thead>
+            <tbody id="leaderRecordTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js?v=20260530-9"></script>
+  </body>
 </html>
