@@ -1,6 +1,4 @@
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -18,31 +16,25 @@ header {
   z-index: 10;
 }
 
-h1 {
-  margin: 0 0 12px;
-  font-size: 22px;
-}
-
-h2 {
-  margin: 0 0 16px;
-  font-size: 20px;
-}
+h1 { margin: 0 0 12px; font-size: 22px; }
+h2 { margin: 0 0 16px; font-size: 20px; }
 
 nav {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
 
 nav a {
-  flex: 1;
   text-align: center;
   color: #cbd5e1;
   text-decoration: none;
-  padding: 12px;
+  padding: 12px 6px;
   border: 1px solid #334155;
   border-radius: 10px;
   background: #111827;
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 15px;
 }
 
 nav a.active {
@@ -65,17 +57,14 @@ nav a.active {
   box-shadow: 0 10px 25px rgba(0,0,0,.2);
 }
 
-form {
-  display: grid;
-  gap: 13px;
-}
+form { display: grid; gap: 13px; }
 
 label {
   display: grid;
   gap: 7px;
   color: #cbd5e1;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 input, select, textarea, button {
@@ -93,9 +82,7 @@ input, select, textarea {
   outline: none;
 }
 
-textarea {
-  resize: vertical;
-}
+textarea { resize: vertical; }
 
 input:focus, select:focus, textarea:focus {
   border-color: #22c55e;
@@ -106,7 +93,7 @@ button {
   border: 0;
   padding: 14px;
   min-height: 50px;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
 }
 
@@ -116,24 +103,34 @@ button {
   font-size: 17px;
 }
 
-.danger {
-  background: #dc2626;
-  color: white;
-}
+.danger { background: #dc2626 !important; color: white !important; }
 
-.actions {
+.option-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
-.actions button {
-  background: #334155;
-  color: white;
+.option-grid.two {
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.actions .danger {
-  background: #dc2626;
+.option-grid label,
+.checks label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  accent-color: #22c55e;
 }
 
 .checks {
@@ -146,23 +143,41 @@ button {
   background: #020617;
 }
 
-.checks label {
-  display: flex;
-  align-items: center;
+.tab-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
-input[type="checkbox"] {
-  width: 22px;
-  height: 22px;
-  min-height: 22px;
-  accent-color: #22c55e;
+.tab {
+  background: #334155;
+  color: #e5e7eb;
+}
+
+.tab.active {
+  background: #22c55e;
+  color: #052e16;
+}
+
+.hidden {
+  display: none;
 }
 
 .toolbar {
   display: grid;
   gap: 10px;
   margin-bottom: 12px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.actions button {
+  background: #334155;
+  color: white;
 }
 
 .record-list {
@@ -182,7 +197,7 @@ input[type="checkbox"] {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  font-weight: 800;
+  font-weight: 900;
   color: #f8fafc;
   margin-bottom: 8px;
 }
@@ -194,8 +209,19 @@ input[type="checkbox"] {
   font-size: 14px;
 }
 
-.record button {
+.record-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin-top: 10px;
+}
+
+.record-actions button {
+  background: #334155;
+  color: white;
+}
+
+.record-actions .delete {
   background: #7f1d1d;
   color: white;
 }
@@ -216,18 +242,14 @@ input[type="checkbox"] {
 
 .summary span {
   display: block;
-  font-size: 34px;
+  font-size: 32px;
   color: #22c55e;
   font-weight: 900;
 }
 
-.summary small {
-  color: #cbd5e1;
-}
+.summary small { color: #cbd5e1; }
 
-.stat-row {
-  margin: 10px 0;
-}
+.stat-row { margin: 10px 0; }
 
 .stat-label {
   display: flex;
@@ -251,13 +273,9 @@ input[type="checkbox"] {
 }
 
 @media (min-width: 768px) {
-  .container {
-    padding: 20px;
-  }
+  .container { padding: 20px; }
 
-  form {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  form { grid-template-columns: repeat(2, 1fr); }
 
   label:has(textarea),
   .checks,
@@ -265,7 +283,5 @@ input[type="checkbox"] {
     grid-column: 1 / -1;
   }
 
-  .summary-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  .summary-grid { grid-template-columns: repeat(4, 1fr); }
 }

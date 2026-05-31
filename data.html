@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>新人留名｜資料中心</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header>
+  <h1>新人留名系統</h1>
+  <nav>
+    <a href="index.html">新人留名</a>
+    <a class="active" href="data.html">資料中心</a>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="card">
+    <div class="tab-bar">
+      <button id="recordsTab" class="tab active" type="button">紀錄列表</button>
+      <button id="statsTab" class="tab" type="button">統計分析</button>
+    </div>
+  </section>
+
+  <section id="recordsPanel" class="card">
+    <div class="toolbar">
+      <h2>紀錄列表</h2>
+      <input type="search" id="searchInput" placeholder="搜尋姓名 / 縣市 / 行政區 / 區域 / 邀約人 / 接待人">
+    </div>
+
+    <div class="actions">
+      <button id="exportCsv">匯出 CSV</button>
+      <button id="clearAll" class="danger">清空全部</button>
+    </div>
+
+    <div id="recordList" class="record-list"></div>
+  </section>
+
+  <section id="statsPanel" class="hidden">
+    <section class="card">
+      <h2>統計總覽</h2>
+      <div class="summary-grid">
+        <div class="summary"><span id="totalCount">0</span><small>總留名人數</small></div>
+        <div class="summary"><span id="monthCount">0</span><small>本月留名</small></div>
+        <div class="summary"><span id="weekCount">0</span><small>本週留名</small></div>
+        <div class="summary"><span id="returnCount">0</span><small>願意再來</small></div>
+        <div class="summary"><span id="actualReturnCount">0</span><small>實際再來</small></div>
+        <div class="summary"><span id="bibleStudyCount">0</span><small>願意陪讀</small></div>
+        <div class="summary"><span id="actualBibleStudyCount">0</span><small>實際陪讀</small></div>
+      </div>
+    </section>
+
+    <section class="card"><h2>北部教區分布</h2><div id="churchAreaStats"></div></section>
+    <section class="card"><h2>年齡分布</h2><div id="ageStats"></div></section>
+    <section class="card"><h2>縣市分布</h2><div id="cityStats"></div></section>
+    <section class="card"><h2>行政區分布</h2><div id="districtStats"></div></section>
+    <section class="card"><h2>新人來源統計</h2><div id="reasonStats"></div></section>
+    <section class="card"><h2>新人需求統計</h2><div id="needStats"></div></section>
+    <section class="card"><h2>來過次數統計</h2><div id="visitTimesStats"></div></section>
+  </section>
+</main>
+
+<script src="data.js"></script>
+</body>
+</html>
