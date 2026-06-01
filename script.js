@@ -354,19 +354,19 @@ function barChart(target, data, options = {}) {
     const margin = { top: 16, right: 16, bottom: 30, left: 18 };
     const height = Math.max(options.height || 250, margin.top + margin.bottom + data.length * rowH);
     const max = Math.max(...data.map((d) => d.value), 1);
-    const plotW = width - margin.left - margin.right;
+    const valueSpace = 34;
+    const plotW = width - margin.left - margin.right - valueSpace;
     const barH = 20;
     const bars = data.map((d, i) => {
       const labelY = margin.top + i * rowH + 14;
       const barY = labelY + 14;
       const w = Math.max(3, (d.value / max) * plotW);
-      const valueX = Math.min(margin.left + w + 6, width - margin.right);
-      const textAnchor = valueX >= width - margin.right ? "end" : "start";
+      const valueX = margin.left + w + 8;
       const color = palette[i % palette.length];
       return `
         <text class="bar-label" x="${margin.left}" y="${labelY}">${escapeHtml(d.label)}</text>
         <rect x="${margin.left}" y="${barY}" width="${w}" height="${barH}" rx="4" fill="${color}"></rect>
-        <text class="value-label" x="${valueX}" y="${barY + barH * 0.72}" text-anchor="${textAnchor}">${d.value}</text>
+        <text class="value-label" x="${valueX}" y="${barY + barH * 0.72}">${d.value}</text>
       `;
     }).join("");
 
@@ -407,6 +407,33 @@ function columnChart(target, data, options = {}) {
     el.innerHTML = `<div class="empty-state">沒有符合條件的資料</div>`;
     return;
   }
+  if (compactCharts()) {
+    const width = 360;
+    const height = 300;
+    const margin = { top: 38, right: 24, bottom: 58, left: 42 };
+    const max = Math.max(...data.map((d) => d.value), 1);
+    const plotW = width - margin.left - margin.right;
+    const plotH = height - margin.top - margin.bottom;
+    const slot = plotW / data.length;
+    const barW = Math.min(44, slot * 0.5);
+    const bars = data.map((d, i) => {
+      const h = Math.max(4, (d.value / max) * plotH);
+      const x = margin.left + i * slot + (slot - barW) / 2;
+      const y = margin.top + plotH - h;
+      return `
+        <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="5" fill="${palette[i % palette.length]}"></rect>
+        <text class="value-label" x="${x + barW / 2}" y="${y - 10}" text-anchor="middle">${d.value}</text>
+        <text class="axis" x="${x + barW / 2}" y="${height - margin.bottom + 34}" text-anchor="middle">${escapeHtml(d.label)}</text>
+      `;
+    }).join("");
+
+    el.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${options.title || "柱狀圖"}">
+      <line x1="${margin.left}" y1="${margin.top + plotH}" x2="${width - margin.right}" y2="${margin.top + plotH}" stroke="#d9e1ea"></line>
+      <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + plotH}" stroke="#d9e1ea"></line>
+      ${bars}
+    </svg>`;
+    return;
+  }
   const width = 900;
   const height = options.height || 320;
   const margin = { top: 30, right: 28, bottom: 66, left: 54 };
@@ -440,6 +467,33 @@ function donutChart(target, data) {
     return;
   }
   const total = data.reduce((sum, d) => sum + d.value, 0);
+  if (compactCharts()) {
+    const radius = 86;
+    const circumference = 2 * Math.PI * radius;
+    let offset = 0;
+    const slices = data.map((d, i) => {
+      const length = (d.value / total) * circumference;
+      const dash = `${length} ${circumference - length}`;
+      const circle = `<circle cx="122" cy="142" r="${radius}" fill="none" stroke="${palette[i % palette.length]}" stroke-width="30" stroke-dasharray="${dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 122 142)"></circle>`;
+      offset += length;
+      return circle;
+    }).join("");
+    const legend = data.map((d, i) => `
+      <g transform="translate(246 ${78 + i * 34})">
+        <rect width="14" height="14" rx="3" fill="${palette[i % palette.length]}"></rect>
+        <text class="legend" x="22" y="13">${escapeHtml(d.label)} ${d.value}</text>
+      </g>
+    `).join("");
+
+    el.innerHTML = `<svg viewBox="0 0 380 300" role="img" aria-label="圓環圖">
+      ${slices}
+      <circle cx="122" cy="142" r="56" fill="#ffffff"></circle>
+      <text x="122" y="137" text-anchor="middle" class="value-label" style="font-size:34px">${total}</text>
+      <text x="122" y="168" text-anchor="middle" class="axis" style="font-size:18px">新人</text>
+      ${legend}
+    </svg>`;
+    return;
+  }
   const radius = 86;
   const circumference = 2 * Math.PI * radius;
   let offset = 0;

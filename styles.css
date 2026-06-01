@@ -1222,7 +1222,12 @@ tbody tr:hover {
   .dashboard-page .legend,
   .dashboard-page .bar-label,
   .dashboard-page .value-label {
-    font-size: 18px;
+    font-size: 20px;
+  }
+
+  .dashboard-page .value-label {
+    font-weight: 800;
+    fill: var(--ink);
   }
 
   .dashboard-page .calendar-weekday {
