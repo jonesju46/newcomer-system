@@ -114,6 +114,16 @@ function validateNewcomerForm(form) {
   if (!requireChecked(form, "languages", "語言程度請至少勾選一項。")) return false;
   if (!requireChecked(form, "contactDays", "方便聯絡日請至少勾選一項。")) return false;
   if (!requireChecked(form, "contactTimes", "方便聯絡時間請至少勾選一項。")) return false;
+  const missingOptionalAnswers = [];
+  if (!$("newWillingStudy")?.value) missingOptionalAnswers.push("是否願意接受陪讀");
+  if (!$("newBeginnerClass")?.value) missingOptionalAnswers.push("是否願意報名初訓班");
+  if (missingOptionalAnswers.length) {
+    const ok = confirm(`${missingOptionalAnswers.join("、")} 尚未填寫。\n\n若新人暫時不想回答，可以按「確定」繼續送出；若要補填，請按「取消」。`);
+    if (!ok) {
+      $(missingOptionalAnswers[0] === "是否願意接受陪讀" ? "newWillingStudy" : "newBeginnerClass")?.focus();
+      return false;
+    }
+  }
   syncNewcomerAge();
   return true;
 }
