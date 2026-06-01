@@ -22,6 +22,7 @@ body {
   background: var(--soft);
   color: var(--ink);
   font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", Arial, sans-serif;
+  font-size: 16px;
   letter-spacing: 0;
 }
 
@@ -539,9 +540,19 @@ textarea {
 .newcomer-card-form .city-field,
 .newcomer-card-form .residence-district-field,
 .newcomer-card-form .invite-field,
+.newcomer-card-form .invite-phone-field,
+.newcomer-card-form .counselor-phone-field,
+.newcomer-card-form .followup-phone-field,
 .newcomer-card-form .rank-field {
   grid-column: auto;
   grid-row: auto;
+}
+
+.newcomer-card-form label,
+.newcomer-card-form input,
+.newcomer-card-form select,
+.newcomer-card-form textarea {
+  font-size: 16px;
 }
 
 .span-all {
@@ -562,7 +573,7 @@ textarea {
 .paper-fieldset legend {
   padding: 0 4px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 800;
 }
 
@@ -572,7 +583,7 @@ textarea {
   align-items: center;
   gap: 5px;
   color: var(--ink);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -603,6 +614,23 @@ textarea {
 
 .newcomer-card-form .form-actions {
   justify-content: flex-start;
+}
+
+.scroll-top-button {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--blue);
+  border-radius: 50%;
+  background: var(--blue);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(36, 107, 254, 0.24);
 }
 
 .form-actions {
