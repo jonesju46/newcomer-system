@@ -532,10 +532,17 @@ textarea {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.birth-selects {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.9fr;
+  gap: 8px;
+}
+
 .newcomer-card-form .district-field,
 .newcomer-card-form .date-field,
 .newcomer-card-form .name-field,
 .newcomer-card-form .age-field,
+.newcomer-card-form .birth-field,
 .newcomer-card-form .ethnicity-field,
 .newcomer-card-form .city-field,
 .newcomer-card-form .residence-district-field,
@@ -1092,6 +1099,7 @@ tbody tr:hover {
   .date-field,
   .name-field,
   .age-field,
+  .birth-field,
   .ethnicity-field,
   .city-field,
   .residence-district-field,

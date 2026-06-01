@@ -436,12 +436,10 @@ function donutChart(target, data) {
 
 function stackedChart(target, rows) {
   const data = [
-    { label: "願意再來", value: rows.filter((x) => yes(x.willingReturn)).length },
-    { label: "實際有來", value: rows.filter((x) => yes(x.actualReturn)).length },
-    { label: "接受陪讀", value: rows.filter((x) => yes(x.willingStudy)).length },
-    { label: "實際陪讀", value: rows.filter((x) => yes(x.actualStudy)).length }
+    { label: "是否願意接受陪讀", value: rows.filter((x) => yes(x.willingStudy)).length },
+    { label: "是否願意報名初訓班", value: rows.filter((x) => yes(x.beginnerClass)).length }
   ];
-  barChart(target, data, { left: 110 });
+  barChart(target, data, { left: 170 });
 }
 
 function leaderChart(target, rows) {
@@ -529,8 +527,8 @@ function renderRecords(newcomers, leaders) {
       <td>${escapeHtml(row.visits)}</td>
       <td>${escapeHtml(row.reason)}</td>
       <td>${escapeHtml(row.inviter)}</td>
-      <td>${escapeHtml(row.rank)}</td>
-      <td>${escapeHtml(`再來:${row.willingReturn} / 實際:${row.actualReturn} / 陪讀:${row.willingStudy} / 實際陪讀:${row.actualStudy}${row.needs ? ` / ${row.needs}` : ""}`)}</td>
+      <td>${escapeHtml(row.inviterPhone || "")}</td>
+      <td>${escapeHtml(`陪讀:${row.willingStudy || "未填寫"} / 初訓:${row.beginnerClass || "未填寫"}${row.needs ? ` / ${row.needs}` : ""}`)}</td>
     </tr>
   `).join("");
   $("leaderRecordTable").innerHTML = sortedLeaders.map((row) => `
@@ -727,21 +725,19 @@ function escapeHtml(value) {
 function render() {
   const { newcomers, services, leaders } = selectedRows();
   const totalAttendance = services.reduce((sum, row) => sum + Number(row.attendance || 0), 0);
-  const willingReturn = newcomers.filter((x) => yes(x.willingReturn)).length;
-  const actualReturn = newcomers.filter((x) => yes(x.actualReturn)).length;
   const willingStudy = newcomers.filter((x) => yes(x.willingStudy)).length;
-  const actualStudy = newcomers.filter((x) => yes(x.actualStudy)).length;
+  const beginnerClass = newcomers.filter((x) => yes(x.beginnerClass)).length;
   const leaderPresent = leaders.filter((x) => isPresentStatus(x.status)).length;
   const leaderAbsent = leaders.length - leaderPresent;
 
   setText("totalAttendance", totalAttendance);
   setText("periodCount", `${services.length} 場聚會`);
   setText("newcomerCount", newcomers.length);
-  setText("returnRate", `${pct(willingReturn, newcomers.length)} 願意再來`);
-  setText("actualReturnCount", actualReturn);
-  setText("actualReturnRate", pct(actualReturn, newcomers.length));
+  setText("returnRate", `${pct(willingStudy, newcomers.length)} 願意陪讀`);
+  setText("actualReturnCount", beginnerClass);
+  setText("actualReturnRate", pct(beginnerClass, newcomers.length));
   setText("studyCount", willingStudy);
-  setText("studyActualRate", `${pct(actualStudy, newcomers.length)} 已實際陪讀`);
+  setText("studyActualRate", `${pct(beginnerClass, newcomers.length)} 願意初訓`);
   setText("leaderRate", pct(leaderPresent, leaders.length));
   setText("leaderAbsences", `${leaderAbsent} 次請假`);
 
@@ -955,7 +951,7 @@ function csvEscape(value) {
 }
 
 function exportCsv() {
-  const headers = ["date", "name", "age", "ethnicity", "residence", "visits", "reason", "inviter", "rank", "needs", "willingReturn", "actualReturn", "willingStudy", "actualStudy", "district"];
+  const headers = ["date", "name", "age", "ethnicity", "residence", "visits", "reason", "inviter", "inviterPhone", "needs", "willingStudy", "beginnerClass", "district"];
   const lines = [headers.join(","), ...state.newcomers.map((row) => headers.map((key) => csvEscape(row[key])).join(","))];
   const blob = new Blob([`\ufeff${lines.join("\n")}`], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -1006,7 +1002,7 @@ function importCsv(file) {
   reader.onload = () => {
     const rows = parseCsv(String(reader.result || ""));
     const headers = rows.shift()?.map((x) => x.trim()) || [];
-    const required = ["date", "name", "age", "ethnicity", "residence", "visits", "reason", "needs", "willingReturn", "actualReturn", "willingStudy", "actualStudy", "district"];
+    const required = ["date", "name", "age", "ethnicity", "residence", "visits", "reason", "needs", "willingStudy", "beginnerClass", "district"];
     const hasRequired = required.every((key) => headers.includes(key));
     if (!hasRequired) {
       alert(`CSV 欄位需要包含：${required.join(", ")}`);

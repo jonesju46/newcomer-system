@@ -31,7 +31,7 @@
                 <div class="field date-field"><label for="newDate">填表日期</label><input id="newDate" name="date" type="date" required /></div>
                 <div class="field name-field"><label for="newName">姓名</label><input id="newName" name="name" type="text" required /></div>
                 <div class="field"><label for="newGender">性別</label><select id="newGender" name="gender"><option>男</option><option>女</option><option>未填寫</option></select></div>
-                <div class="field"><label for="newBirthDate">出生日期</label><input id="newBirthDate" name="birthDate" type="date" required /></div>
+                <div class="field birth-field"><label for="newBirthYear">出生日期</label><div class="birth-selects"><select id="newBirthYear" name="birthYear" required></select><select id="newBirthMonth" name="birthMonth" required></select><select id="newBirthDay" name="birthDay" required></select></div><input id="newBirthDate" name="birthDate" type="hidden" /></div>
                 <div class="field age-field"><label for="newAge">年齡</label><input id="newAge" name="age" type="number" min="0" max="120" readonly required /></div>
 
                 <fieldset class="paper-fieldset span-all">
@@ -131,8 +131,6 @@
             </section>
           </div>
           <input id="newVisits" name="visits" type="hidden" value="1" />
-          <input id="newActualReturn" name="actualReturn" type="hidden" value="否" />
-          <input id="newActualStudy" name="actualStudy" type="hidden" value="否" />
           <div class="form-actions">
             <button class="primary-button" type="submit">送出新人留名</button>
             <span id="newcomerMessage" class="form-message" aria-live="polite"></span>
