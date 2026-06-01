@@ -1207,16 +1207,15 @@ tbody tr:hover {
   }
 
   .dashboard-page .chart {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
 
   .dashboard-page .chart svg {
-    min-width: 680px;
+    min-width: 0;
   }
 
   .dashboard-page .chart.large svg {
-    min-width: 760px;
+    min-width: 0;
   }
 
   .dashboard-page .axis,

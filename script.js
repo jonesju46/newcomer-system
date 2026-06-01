@@ -45,6 +45,10 @@ let rangeCalendarOpen = false;
 const $ = (id) => document.getElementById(id);
 const sheetsConfig = window.CHURCH_SHEETS_CONFIG || {};
 
+function compactCharts() {
+  return window.matchMedia?.("(max-width: 560px)").matches;
+}
+
 function googleSheetsEnabled() {
   return Boolean(sheetsConfig.webAppUrl && sheetsConfig.webAppUrl.startsWith("https://script.google.com/"));
 }
@@ -342,6 +346,34 @@ function barChart(target, data, options = {}) {
   const el = $(target);
   if (!data.length) {
     el.innerHTML = `<div class="empty-state">沒有符合條件的資料</div>`;
+    return;
+  }
+  if (compactCharts()) {
+    const width = 360;
+    const rowH = 62;
+    const margin = { top: 16, right: 16, bottom: 30, left: 18 };
+    const height = Math.max(options.height || 250, margin.top + margin.bottom + data.length * rowH);
+    const max = Math.max(...data.map((d) => d.value), 1);
+    const plotW = width - margin.left - margin.right;
+    const barH = 20;
+    const bars = data.map((d, i) => {
+      const labelY = margin.top + i * rowH + 14;
+      const barY = labelY + 14;
+      const w = Math.max(3, (d.value / max) * plotW);
+      const valueX = Math.min(margin.left + w + 6, width - margin.right);
+      const textAnchor = valueX >= width - margin.right ? "end" : "start";
+      const color = palette[i % palette.length];
+      return `
+        <text class="bar-label" x="${margin.left}" y="${labelY}">${escapeHtml(d.label)}</text>
+        <rect x="${margin.left}" y="${barY}" width="${w}" height="${barH}" rx="4" fill="${color}"></rect>
+        <text class="value-label" x="${valueX}" y="${barY + barH * 0.72}" text-anchor="${textAnchor}">${d.value}</text>
+      `;
+    }).join("");
+
+    el.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${options.title || "長條圖"}">
+      <line x1="${margin.left}" y1="${height - margin.bottom + 6}" x2="${width - margin.right}" y2="${height - margin.bottom + 6}" stroke="#d9e1ea"></line>
+      ${bars}
+    </svg>`;
     return;
   }
   const width = 760;
