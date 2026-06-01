@@ -81,10 +81,46 @@ function today() {
 function formToObject(form) {
   const data = {};
   for (const [key, value] of new FormData(form).entries()) {
-    if (data[key]) data[key] = `${data[key]}、${value}`;
+    if (data[key]) data[key] = `${data[key]}, ${value}`;
     else data[key] = value;
   }
   return data;
+}
+
+function calculateAge(birthDate, atDate = today()) {
+  if (!birthDate) return "";
+  const birth = new Date(`${birthDate}T00:00:00`);
+  const at = new Date(`${atDate}T00:00:00`);
+  if (Number.isNaN(birth.getTime()) || birth > at) return "";
+  let age = at.getFullYear() - birth.getFullYear();
+  const monthDelta = at.getMonth() - birth.getMonth();
+  if (monthDelta < 0 || (monthDelta === 0 && at.getDate() < birth.getDate())) age -= 1;
+  return String(age);
+}
+
+function syncNewcomerAge() {
+  if (!$("newBirthDate") || !$("newAge")) return;
+  $("newAge").value = calculateAge($("newBirthDate").value, $("newDate")?.value || today());
+}
+
+function requireChecked(form, name, message) {
+  if (form.querySelectorAll(`input[name="${name}"]:checked`).length) return true;
+  alert(message);
+  form.querySelector(`input[name="${name}"]`)?.focus();
+  return false;
+}
+
+function validateNewcomerForm(form) {
+  if (!$("newHomePhone").value.trim() && !$("newMobile").value.trim()) {
+    alert("聯絡電話（家）或行動電話請至少填寫一個。");
+    $("newMobile").focus();
+    return false;
+  }
+  if (!requireChecked(form, "languages", "語言程度請至少勾選一項。")) return false;
+  if (!requireChecked(form, "contactDays", "方便聯絡日請至少勾選一項。")) return false;
+  if (!requireChecked(form, "contactTimes", "方便聯絡時間請至少勾選一項。")) return false;
+  syncNewcomerAge();
+  return true;
 }
 
 function escapeHtml(value) {
@@ -202,8 +238,11 @@ function newcomerSummary(record) {
     ${summaryRow("來過幾次", record.visits)}
     ${summaryRow("來教會原因", record.reason)}
     ${summaryRow("邀請人", record.inviter)}
+    ${summaryRow("邀請人電話", record.inviterPhone)}
     ${summaryRow("陪談人", record.counselor)}
+    ${summaryRow("陪談人電話", record.counselorPhone)}
     ${summaryRow("跟進人", record.followupPerson)}
+    ${summaryRow("跟進人電話", record.followupPhone)}
     ${summaryRow("級職", record.rank)}
     ${summaryRow("北部教區", record.district)}
     ${summaryRow("需求", record.needs)}
@@ -231,7 +270,7 @@ function fillForm(form, data) {
     const field = form.elements[key];
     if (!field) return;
     if (field instanceof RadioNodeList) {
-      const values = String(value ?? "").split("、");
+      const values = String(value ?? "").split(", ");
       Array.from(field).forEach((item) => {
         if (item.type === "checkbox") item.checked = values.includes(item.value);
         else item.checked = item.value === value;
@@ -286,15 +325,18 @@ function setupCheckins() {
 
   if (newcomerForm) {
     $("newDate").value = today();
-    $("newAge").innerHTML = ageGroups.map((group) => `<option>${group}</option>`).join("");
+    if ($("newAge").tagName === "SELECT") $("newAge").innerHTML = ageGroups.map((group) => `<option>${group}</option>`).join("");
     $("newResidenceCity").innerHTML = Object.keys(residenceAreas).map((city) => `<option>${city}</option>`).join("");
     $("newResidenceCity").value = "新北市";
     renderResidenceDistricts();
     $("newResidenceDistrict").value = "板橋區";
     $("newResidenceCity").addEventListener("change", renderResidenceDistricts);
+    $("newBirthDate")?.addEventListener("change", syncNewcomerAge);
+    $("newDate")?.addEventListener("change", syncNewcomerAge);
 
     newcomerForm.addEventListener("submit", (event) => {
       event.preventDefault();
+      if (!validateNewcomerForm(event.currentTarget)) return;
       const state = loadData();
       const data = formToObject(event.currentTarget);
       const previous = editTarget?.type === "newcomer" ? state.newcomers[editTarget.index] : null;
@@ -362,6 +404,10 @@ function setupCheckins() {
     editTarget = null;
     const target = lastSavedRecord?.type === "leader" || !newcomerForm ? "leaderCheckin" : "newcomerCheckin";
     showHome(target);
+  });
+
+  $("scrollTopButton")?.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 }
 
