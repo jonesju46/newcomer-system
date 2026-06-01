@@ -111,11 +111,6 @@ function requireChecked(form, name, message) {
 }
 
 function validateNewcomerForm(form) {
-  if (!$("newHomePhone").value.trim() && !$("newMobile").value.trim()) {
-    alert("聯絡電話（家）或行動電話請至少填寫一個。");
-    $("newMobile").focus();
-    return false;
-  }
   if (!requireChecked(form, "languages", "語言程度請至少勾選一項。")) return false;
   if (!requireChecked(form, "contactDays", "方便聯絡日請至少勾選一項。")) return false;
   if (!requireChecked(form, "contactTimes", "方便聯絡時間請至少勾選一項。")) return false;
@@ -229,7 +224,7 @@ function newcomerSummary(record) {
     ${summaryRow("教育程度", record.education)}
     ${summaryRow("職業", record.occupation)}
     ${summaryRow("宗教信仰", record.religion)}
-    ${summaryRow("電話", record.mobile || record.homePhone)}
+    ${summaryRow("電話", record.phone)}
     ${summaryRow("Email", record.email)}
     ${summaryRow("居住地", record.residence)}
     ${summaryRow("地址", record.address)}
@@ -243,7 +238,6 @@ function newcomerSummary(record) {
     ${summaryRow("陪談人電話", record.counselorPhone)}
     ${summaryRow("跟進人", record.followupPerson)}
     ${summaryRow("跟進人電話", record.followupPhone)}
-    ${summaryRow("級職", record.rank)}
     ${summaryRow("北部教區", record.district)}
     ${summaryRow("需求", record.needs)}
     ${summaryRow("願意再來", record.willingReturn)}

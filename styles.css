@@ -1102,9 +1102,36 @@ tbody tr:hover {
   .willing-study-field,
   .actual-study-field,
   .invite-field,
+  .invite-phone-field,
+  .counselor-phone-field,
+  .followup-phone-field,
   .rank-field {
     grid-column: auto;
     grid-row: auto;
+  }
+
+  .newcomer-card-form .invite-field {
+    order: 20;
+  }
+
+  .newcomer-card-form .invite-phone-field {
+    order: 21;
+  }
+
+  .newcomer-card-form .field:has(#newCounselor) {
+    order: 22;
+  }
+
+  .newcomer-card-form .counselor-phone-field {
+    order: 23;
+  }
+
+  .newcomer-card-form .field:has(#newFollowupPerson) {
+    order: 24;
+  }
+
+  .newcomer-card-form .followup-phone-field {
+    order: 25;
   }
 }
 
