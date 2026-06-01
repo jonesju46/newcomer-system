@@ -98,6 +98,49 @@ function calculateAge(birthDate, atDate = today()) {
   return String(age);
 }
 
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+function daysInMonth(year, month) {
+  if (!year || !month) return 31;
+  return new Date(Number(year), Number(month), 0).getDate();
+}
+
+function setupBirthSelectors() {
+  if (!$("newBirthYear") || !$("newBirthMonth") || !$("newBirthDay")) return;
+  const currentYear = new Date().getFullYear();
+  $("newBirthYear").innerHTML = `<option value="">年</option>${Array.from({ length: 101 }, (_, index) => {
+    const year = currentYear - index;
+    return `<option value="${year}">${year}年</option>`;
+  }).join("")}`;
+  $("newBirthMonth").innerHTML = `<option value="">月</option>${Array.from({ length: 12 }, (_, index) => {
+    const month = index + 1;
+    return `<option value="${pad2(month)}">${month}月</option>`;
+  }).join("")}`;
+  renderBirthDays();
+}
+
+function renderBirthDays() {
+  if (!$("newBirthDay")) return;
+  const current = $("newBirthDay").value;
+  const totalDays = daysInMonth($("newBirthYear")?.value, $("newBirthMonth")?.value);
+  $("newBirthDay").innerHTML = `<option value="">日</option>${Array.from({ length: totalDays }, (_, index) => {
+    const day = index + 1;
+    return `<option value="${pad2(day)}">${day}日</option>`;
+  }).join("")}`;
+  if (Number(current) <= totalDays) $("newBirthDay").value = current;
+}
+
+function syncBirthDate() {
+  if (!$("newBirthDate")) return;
+  const year = $("newBirthYear")?.value || "";
+  const month = $("newBirthMonth")?.value || "";
+  const day = $("newBirthDay")?.value || "";
+  $("newBirthDate").value = year && month && day ? `${year}-${month}-${day}` : "";
+  syncNewcomerAge();
+}
+
 function syncNewcomerAge() {
   if (!$("newBirthDate") || !$("newAge")) return;
   $("newAge").value = calculateAge($("newBirthDate").value, $("newDate")?.value || today());
@@ -111,6 +154,12 @@ function requireChecked(form, name, message) {
 }
 
 function validateNewcomerForm(form) {
+  syncBirthDate();
+  if (!$("newBirthDate")?.value) {
+    alert("出生日期請完整選擇年、月、日。");
+    ($("newBirthDay") || $("newBirthMonth") || $("newBirthYear"))?.focus();
+    return false;
+  }
   if (!requireChecked(form, "languages", "語言程度請至少勾選一項。")) return false;
   if (!requireChecked(form, "contactDays", "方便聯絡日請至少勾選一項。")) return false;
   if (!requireChecked(form, "contactTimes", "方便聯絡時間請至少勾選一項。")) return false;
@@ -250,10 +299,8 @@ function newcomerSummary(record) {
     ${summaryRow("跟進人電話", record.followupPhone)}
     ${summaryRow("北部教區", record.district)}
     ${summaryRow("需求", record.needs)}
-    ${summaryRow("願意再來", record.willingReturn)}
-    ${summaryRow("實際有來", record.actualReturn)}
-    ${summaryRow("接受陪讀", record.willingStudy)}
-    ${summaryRow("實際陪讀", record.actualStudy)}
+    ${summaryRow("是否願意接受陪讀", record.willingStudy)}
+    ${summaryRow("是否願意報名初訓班", record.beginnerClass)}
   `;
 }
 
@@ -283,6 +330,14 @@ function fillForm(form, data) {
     }
     field.value = value;
   });
+  if (data.birthDate && $("newBirthYear") && $("newBirthMonth") && $("newBirthDay")) {
+    const [year, month, day] = String(data.birthDate).split("-");
+    $("newBirthYear").value = year || "";
+    $("newBirthMonth").value = month || "";
+    renderBirthDays();
+    $("newBirthDay").value = day || "";
+    syncBirthDate();
+  }
 }
 
 function editLastRecord() {
@@ -329,13 +384,18 @@ function setupCheckins() {
 
   if (newcomerForm) {
     $("newDate").value = today();
+    setupBirthSelectors();
     if ($("newAge").tagName === "SELECT") $("newAge").innerHTML = ageGroups.map((group) => `<option>${group}</option>`).join("");
     $("newResidenceCity").innerHTML = Object.keys(residenceAreas).map((city) => `<option>${city}</option>`).join("");
     $("newResidenceCity").value = "新北市";
     renderResidenceDistricts();
     $("newResidenceDistrict").value = "板橋區";
     $("newResidenceCity").addEventListener("change", renderResidenceDistricts);
-    $("newBirthDate")?.addEventListener("change", syncNewcomerAge);
+    ["newBirthYear", "newBirthMonth"].forEach((id) => $(id)?.addEventListener("change", () => {
+      renderBirthDays();
+      syncBirthDate();
+    }));
+    $("newBirthDay")?.addEventListener("change", syncBirthDate);
     $("newDate")?.addEventListener("change", syncNewcomerAge);
 
     newcomerForm.addEventListener("submit", (event) => {
