@@ -733,11 +733,11 @@ function render() {
   setText("totalAttendance", totalAttendance);
   setText("periodCount", `${services.length} 場聚會`);
   setText("newcomerCount", newcomers.length);
-  setText("returnRate", `${pct(willingStudy, newcomers.length)} 願意陪讀`);
-  setText("actualReturnCount", beginnerClass);
-  setText("actualReturnRate", pct(beginnerClass, newcomers.length));
+  setText("newcomerRate", `${newcomers.length} 筆新人留名`);
   setText("studyCount", willingStudy);
-  setText("studyActualRate", `${pct(beginnerClass, newcomers.length)} 願意初訓`);
+  setText("studyRate", pct(willingStudy, newcomers.length));
+  setText("beginnerClassCount", beginnerClass);
+  setText("beginnerClassRate", pct(beginnerClass, newcomers.length));
   setText("leaderRate", pct(leaderPresent, leaders.length));
   setText("leaderAbsences", `${leaderAbsent} 次請假`);
 

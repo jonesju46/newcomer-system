@@ -1033,6 +1033,33 @@ tbody tr:hover {
   background: #f8fbff;
 }
 
+.dashboard-page main,
+.dashboard-page label,
+.dashboard-page input,
+.dashboard-page select,
+.dashboard-page button,
+.dashboard-page .metric span,
+.dashboard-page .metric small,
+.dashboard-page .toolbar-metric span,
+.dashboard-page .toolbar-metric small,
+.dashboard-page .panel-heading span,
+.dashboard-page .section-heading span,
+.dashboard-page .summary-row span,
+.dashboard-page .summary-row strong,
+.dashboard-page .axis,
+.dashboard-page .legend,
+.dashboard-page .bar-label,
+.dashboard-page .value-label,
+.dashboard-page .empty-state,
+.dashboard-page .calendar-actions strong,
+.dashboard-page .calendar-actions span,
+.dashboard-page .district-record-summary h3,
+.dashboard-page .district-summary-list,
+.dashboard-page th,
+.dashboard-page td {
+  font-size: 16px;
+}
+
 .pill {
   display: inline-flex;
   align-items: center;
