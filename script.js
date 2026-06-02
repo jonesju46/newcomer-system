@@ -1,5 +1,5 @@
 const palette = ["#246bfe", "#178f83", "#c98216", "#cf4f6c", "#2e7d4f", "#7656d6", "#6b7280", "#d05a2b"];
-const districts = ["1區", "2區", "3區", "4區", "管制區"];
+const districts = ["1區", "2區", "3區", "4區", "管制區", "獨立一組", "獨立二組"];
 const ageGroups = ["未滿18歲", "19~25", "26~35", "36~45", "46~55", "56~65", "66~75", "76歲以上"];
 const meetingTypes = ["小組聚會", "幹部訓練", "主日聚會"];
 const residenceAreas = {
@@ -846,7 +846,7 @@ function render() {
   barChart("reasonChart", countBy(newcomers, (x) => x.reason).slice(0, 7));
   barChart("needChart", countBy(newcomers, (x) => String(x.needs || "").split(";").map((item) => item.trim())).slice(0, 8));
   stackedChart("followupChart", newcomers);
-  barChart("districtChart", countBy(newcomers, (x) => x.district, ["1區", "2區", "3區", "4區", "管制區"]));
+  barChart("districtChart", countBy(newcomers, (x) => x.district, districts));
   leaderChart("leaderChart", leaders);
   const recordRows = calendarRows();
   renderRecords(recordRows.newcomers, recordRows.leaders);
