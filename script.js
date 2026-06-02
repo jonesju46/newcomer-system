@@ -613,7 +613,7 @@ function renderSignupLists(newcomers) {
     el.innerHTML = rows.map((row) => `
       <li>
         <strong>${escapeHtml(row.name || "未填寫姓名")}</strong>
-        <span>${escapeHtml([row.district, row.phone || row.inviterPhone || "", row.inviter ? `邀請:${row.inviter}` : ""].filter(Boolean).join(" / "))}</span>
+        <span>${escapeHtml([row.district, row.inviter ? `邀請:${row.inviter}` : ""].filter(Boolean).join(" / "))}</span>
       </li>
     `).join("");
   };
