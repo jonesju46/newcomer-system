@@ -1,6 +1,6 @@
 const palette = ["#246bfe", "#178f83", "#c98216", "#cf4f6c", "#2e7d4f", "#7656d6", "#6b7280", "#d05a2b"];
 const districts = ["1區", "2區", "3區", "4區", "管制區"];
-const ageGroups = ["未滿15歲", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75歲以上"];
+const ageGroups = ["未滿18歲", "19~25", "26~35", "36~45", "46~55", "56~65", "66~75", "76歲以上"];
 const meetingTypes = ["小組聚會", "幹部訓練", "主日聚會"];
 const residenceAreas = {
   "基隆市": ["仁愛區", "信義區", "中正區", "中山區", "安樂區", "暖暖區", "七堵區"],
@@ -167,22 +167,33 @@ function today() {
 function ageGroup(age) {
   const value = String(age ?? "").trim();
   if (ageGroups.includes(value)) return value;
-  const numericAge = Number(value);
+  const oldRanges = {
+    "未滿15歲": 14,
+    "15-19": 17,
+    "20-24": 22,
+    "25-29": 27,
+    "30-34": 32,
+    "35-39": 37,
+    "40-44": 42,
+    "45-49": 47,
+    "50-54": 52,
+    "55-59": 57,
+    "60-64": 62,
+    "65-69": 67,
+    "70-74": 72,
+    "75歲以上": 76
+  };
+  const ageValue = oldRanges[value] ?? value;
+  const numericAge = Number(ageValue);
   if (Number.isNaN(numericAge)) return "未填寫";
-  if (numericAge < 15) return "未滿15歲";
-  if (numericAge <= 19) return "15-19";
-  if (numericAge <= 24) return "20-24";
-  if (numericAge <= 29) return "25-29";
-  if (numericAge <= 34) return "30-34";
-  if (numericAge <= 39) return "35-39";
-  if (numericAge <= 44) return "40-44";
-  if (numericAge <= 49) return "45-49";
-  if (numericAge <= 54) return "50-54";
-  if (numericAge <= 59) return "55-59";
-  if (numericAge <= 64) return "60-64";
-  if (numericAge <= 69) return "65-69";
-  if (numericAge <= 74) return "70-74";
-  return "75歲以上";
+  if (numericAge < 18) return "未滿18歲";
+  if (numericAge <= 25) return "19~25";
+  if (numericAge <= 35) return "26~35";
+  if (numericAge <= 45) return "36~45";
+  if (numericAge <= 55) return "46~55";
+  if (numericAge <= 65) return "56~65";
+  if (numericAge <= 75) return "66~75";
+  return "76歲以上";
 }
 
 function visitGroup(visits) {
@@ -1222,6 +1233,9 @@ function setupCheckins() {
 
 document.addEventListener("DOMContentLoaded", () => {
   window.scrollTo(0, 0);
+  $("scrollTopButton")?.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
   setupCheckins();
   setupMainTabs();
   setupLeaderCalendarTabs();
