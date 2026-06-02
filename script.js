@@ -602,6 +602,26 @@ function leaderChart(target, rows) {
   </svg>`;
 }
 
+function renderSignupLists(newcomers) {
+  const renderList = (target, rows) => {
+    const el = $(target);
+    if (!el) return;
+    if (!rows.length) {
+      el.innerHTML = `<li class="empty-signup">目前沒有名單</li>`;
+      return;
+    }
+    el.innerHTML = rows.map((row) => `
+      <li>
+        <strong>${escapeHtml(row.name || "未填寫姓名")}</strong>
+        <span>${escapeHtml([row.district, row.phone || row.inviterPhone || "", row.inviter ? `邀請:${row.inviter}` : ""].filter(Boolean).join(" / "))}</span>
+      </li>
+    `).join("");
+  };
+
+  renderList("studySignupList", newcomers.filter((row) => yes(row.willingStudy)));
+  renderList("beginnerSignupList", newcomers.filter((row) => yes(row.beginnerClass)));
+}
+
 function renderRecords(newcomers, leaders) {
   const newcomerMonth = $("newcomerCalendarMonth")?.value;
   const leaderMonth = $("leaderCalendarMonth")?.value;
@@ -846,6 +866,7 @@ function render() {
   barChart("reasonChart", countBy(newcomers, (x) => x.reason).slice(0, 7));
   barChart("needChart", countBy(newcomers, (x) => String(x.needs || "").split(";").map((item) => item.trim())).slice(0, 8));
   stackedChart("followupChart", newcomers);
+  renderSignupLists(newcomers);
   barChart("districtChart", countBy(newcomers, (x) => x.district, districts));
   leaderChart("leaderChart", leaders);
   const recordRows = calendarRows();
