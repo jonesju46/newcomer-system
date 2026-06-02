@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>主日聚會統計儀表板</title>
-    <link rel="stylesheet" href="styles.css?v=20260602-8" />
+    <link rel="stylesheet" href="styles.css?v=20260602-9" />
   </head>
   <body class="dashboard-page">
     <header class="app-header">
@@ -140,12 +140,12 @@
           <div id="needChart" class="chart"></div>
         </article>
 
-        <article class="panel wide newcomer-view">
+        <article class="panel newcomer-view">
           <div class="panel-heading">
-            <h2>陪讀與初訓</h2>
+            <h2>陪讀</h2>
             <span>意願統計</span>
           </div>
-          <div id="followupChart" class="chart"></div>
+          <div id="studyChart" class="chart"></div>
           <div class="signup-lists" aria-label="報名的清單">
             <h3>報名的清單</h3>
             <div class="signup-list-grid">
@@ -153,6 +153,19 @@
                 <h4>願意陪讀</h4>
                 <ul id="studySignupList"></ul>
               </section>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel newcomer-view">
+          <div class="panel-heading">
+            <h2>初訓</h2>
+            <span>意願統計</span>
+          </div>
+          <div id="beginnerChart" class="chart"></div>
+          <div class="signup-lists" aria-label="報名的清單">
+            <h3>報名的清單</h3>
+            <div class="signup-list-grid">
               <section>
                 <h4>願意報名初訓班</h4>
                 <ul id="beginnerSignupList"></ul>
@@ -282,6 +295,6 @@
 
     <button id="scrollTopButton" class="scroll-top-button" type="button" aria-label="回到最上方">↑</button>
     <script src="config.js?v=20260602-3"></script>
-    <script src="script.js?v=20260602-8"></script>
+    <script src="script.js?v=20260602-9"></script>
   </body>
 </html>

@@ -820,7 +820,7 @@ textarea {
 }
 
 .signup-list-grid section {
-  min-height: 96px;
+  min-height: 90px;
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 8px;

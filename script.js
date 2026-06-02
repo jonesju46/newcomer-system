@@ -531,10 +531,9 @@ function donutChart(target, data) {
   </svg>`;
 }
 
-function stackedChart(target, rows) {
+function signupChart(target, label, value) {
   const data = [
-    { label: "是否願意接受陪讀", value: rows.filter((x) => yes(x.willingStudy)).length },
-    { label: "是否願意報名初訓班", value: rows.filter((x) => yes(x.beginnerClass)).length }
+    { label, value }
   ];
   barChart(target, data, { left: 170 });
 }
@@ -865,7 +864,8 @@ function render() {
   barChart("visitChart", countBy(newcomers, (x) => visitGroup(Number(x.visits || 1)), ["第1次", "第2次", "第3次", "4次以上"]));
   barChart("reasonChart", countBy(newcomers, (x) => x.reason).slice(0, 7));
   barChart("needChart", countBy(newcomers, (x) => String(x.needs || "").split(";").map((item) => item.trim())).slice(0, 8));
-  stackedChart("followupChart", newcomers);
+  signupChart("studyChart", "是否願意接受陪讀", willingStudy);
+  signupChart("beginnerChart", "是否願意報名初訓班", beginnerClass);
   renderSignupLists(newcomers);
   barChart("districtChart", countBy(newcomers, (x) => x.district, districts));
   leaderChart("leaderChart", leaders);
