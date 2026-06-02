@@ -1108,6 +1108,57 @@ table {
   min-width: 4400px;
 }
 
+.newcomer-record-table th,
+.newcomer-record-table td {
+  min-width: 120px;
+}
+
+.newcomer-record-table th:nth-child(1),
+.newcomer-record-table td:nth-child(1) {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 112px;
+  background: #ffffff;
+}
+
+.newcomer-record-table th:nth-child(2),
+.newcomer-record-table td:nth-child(2) {
+  position: sticky;
+  left: 112px;
+  z-index: 3;
+  min-width: 138px;
+  background: #ffffff;
+}
+
+.newcomer-record-table th:nth-child(3),
+.newcomer-record-table td:nth-child(3) {
+  position: sticky;
+  left: 250px;
+  z-index: 3;
+  min-width: 112px;
+  background: #ffffff;
+}
+
+.newcomer-record-table th:nth-child(4),
+.newcomer-record-table td:nth-child(4) {
+  position: sticky;
+  left: 362px;
+  z-index: 3;
+  min-width: 118px;
+  background: #ffffff;
+  box-shadow: 8px 0 12px rgba(24, 33, 47, 0.08);
+}
+
+.newcomer-record-table th:nth-child(-n + 4) {
+  z-index: 5;
+  background: #eef4fb;
+}
+
+.newcomer-record-table tbody tr:hover td:nth-child(-n + 4) {
+  background: #f8fbff;
+}
+
 th,
 td {
   padding: 10px 12px;
