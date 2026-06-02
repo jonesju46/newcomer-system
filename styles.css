@@ -1104,6 +1104,10 @@ table {
   background: #ffffff;
 }
 
+.newcomer-record-table {
+  min-width: 4400px;
+}
+
 th,
 td {
   padding: 10px 12px;

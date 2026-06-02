@@ -617,6 +617,8 @@ function renderSignupLists(newcomers) {
 
 function newcomerSortValue(row, key) {
   if (key === "age") return ageGroup(row.age);
+  if (key === "residenceCity") return newcomerResidenceCity(row);
+  if (key === "residenceDistrict") return newcomerResidenceDistrict(row);
   if (key === "followup") return `陪讀:${row.willingStudy || ""} 初訓:${row.beginnerClass || ""}`;
   return String(row[key] ?? "");
 }
@@ -639,6 +641,19 @@ function renderNewcomerDistrictCounts(rows) {
     const count = rows.filter((row) => row.district === district).length;
     return `<div><strong>${escapeHtml(district)}</strong><span>新人 ${count}</span></div>`;
   }).join("");
+}
+
+function newcomerResidenceCity(row) {
+  return row.residenceCity || String(row.residence || "").split("-")[0] || "";
+}
+
+function newcomerResidenceDistrict(row) {
+  const parts = String(row.residence || "").split("-");
+  return row.residenceDistrict || parts.slice(1).join("-") || "";
+}
+
+function tableCell(value) {
+  return `<td>${escapeHtml(value || "")}</td>`;
 }
 
 function updateNewcomerSortButtons() {
@@ -664,16 +679,46 @@ function renderRecords(newcomers, leaders) {
 
   $("newcomerRecordTable").innerHTML = sortedNewcomers.map((row) => `
     <tr>
-      <td>${escapeHtml(row.date)}</td>
-      <td><strong>${escapeHtml(row.name)}</strong></td>
-      <td>${escapeHtml(row.district)}</td>
-      <td>${escapeHtml(row.residence)}</td>
-      <td>${escapeHtml(row.ethnicity)}</td>
-      <td>${escapeHtml(ageGroup(row.age))}</td>
-      <td>${escapeHtml(row.reason)}</td>
-      <td>${escapeHtml(row.inviter)}</td>
-      <td>${escapeHtml(row.inviterPhone || "")}</td>
-      <td>${escapeHtml(`陪讀:${row.willingStudy || "未填寫"} / 初訓:${row.beginnerClass || "未填寫"}${row.needs ? ` / ${row.needs}` : ""}`)}</td>
+      ${tableCell(row.date)}
+      ${tableCell(row.district)}
+      ${tableCell(row.group)}
+      <td><strong>${escapeHtml(row.name || "")}</strong></td>
+      ${tableCell(row.gender)}
+      ${tableCell(row.birthDate)}
+      ${tableCell(row.age)}
+      ${tableCell(row.languages)}
+      ${tableCell(row.education)}
+      ${tableCell(row.occupation)}
+      ${tableCell(row.religion)}
+      ${tableCell(row.ethnicity)}
+      ${tableCell(row.phone)}
+      ${tableCell(row.email)}
+      ${tableCell(newcomerResidenceCity(row))}
+      ${tableCell(newcomerResidenceDistrict(row))}
+      ${tableCell(row.address)}
+      ${tableCell(row.contactDays)}
+      ${tableCell(row.contactTimes)}
+      ${tableCell(row.inviter)}
+      ${tableCell(row.inviterPhone)}
+      ${tableCell(row.counselor)}
+      ${tableCell(row.counselorPhone)}
+      ${tableCell(row.followupPerson)}
+      ${tableCell(row.followupPhone)}
+      ${tableCell(row.visitedChurch)}
+      ${tableCell(row.visitedWhen)}
+      ${tableCell(row.visitedPlace)}
+      ${tableCell(row.reason)}
+      ${tableCell(row.hasFaith)}
+      ${tableCell(row.faithDuration)}
+      ${tableCell(row.faithHelp)}
+      ${tableCell(row.lifeDifficulty)}
+      ${tableCell(row.willingReturn)}
+      ${tableCell(row.favoritePart)}
+      ${tableCell(row.wantLearn)}
+      ${tableCell(row.unclearPart)}
+      ${tableCell(row.needs)}
+      ${tableCell(row.willingStudy)}
+      ${tableCell(row.beginnerClass)}
     </tr>
   `).join("");
   $("leaderRecordTable").innerHTML = sortedLeaders.map((row) => `
@@ -890,7 +935,6 @@ function render() {
   barChart("ageChart", countBy(newcomers, (x) => ageGroup(x.age), [...ageGroups, "未填寫"]));
   donutChart("ethnicityChart", countBy(newcomers, (x) => x.ethnicity));
   barChart("residenceChart", countBy(newcomers, (x) => x.residence).slice(0, 7));
-  barChart("reasonChart", countBy(newcomers, (x) => x.reason).slice(0, 7));
   barChart("needChart", countBy(newcomers, (x) => String(x.needs || "").split(";").map((item) => item.trim())).slice(0, 8));
   signupChart("studyChart", "是否願意接受陪讀", willingStudy);
   signupChart("beginnerChart", "是否願意報名初訓班", beginnerClass);

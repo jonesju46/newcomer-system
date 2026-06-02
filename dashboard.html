@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>主日聚會統計儀表板</title>
-    <link rel="stylesheet" href="styles.css?v=20260602-12" />
+    <link rel="stylesheet" href="styles.css?v=20260602-14" />
   </head>
   <body class="dashboard-page">
     <header class="app-header">
@@ -118,14 +118,6 @@
 
         <article class="panel newcomer-view">
           <div class="panel-heading">
-            <h2>來教會原因</h2>
-            <span>主要原因</span>
-          </div>
-          <div id="reasonChart" class="chart"></div>
-        </article>
-
-        <article class="panel newcomer-view">
-          <div class="panel-heading">
             <h2>新人需求統計</h2>
             <span>可多選需求</span>
           </div>
@@ -213,19 +205,49 @@
           <span id="newcomerTableCount">0 筆</span>
         </div>
         <div class="table-wrap">
-          <table>
+          <table class="newcomer-record-table">
             <thead>
               <tr>
-                <th><button class="sort-button" type="button" data-newcomer-sort="date">日期</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="date">填表日期</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="district">單位 / 北部教區</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="group">小組</button></th>
                 <th><button class="sort-button" type="button" data-newcomer-sort="name">姓名</button></th>
-                <th><button class="sort-button" type="button" data-newcomer-sort="district">教區</button></th>
-                <th><button class="sort-button" type="button" data-newcomer-sort="residence">居住地</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="gender">性別</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="birthDate">出生日期</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="age">年齡</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="languages">語言程度</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="education">教育程度</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="occupation">職業</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="religion">宗教信仰</button></th>
                 <th><button class="sort-button" type="button" data-newcomer-sort="ethnicity">族群</button></th>
-                <th><button class="sort-button" type="button" data-newcomer-sort="age">年齡區間</button></th>
-                <th><button class="sort-button" type="button" data-newcomer-sort="reason">原因 / 狀態</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="phone">聯絡電話</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="email">電子郵件</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="residenceCity">居住縣市</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="residenceDistrict">居住區域</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="address">地址</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="contactDays">方便聯絡日期</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="contactTimes">方便聯絡時間</button></th>
                 <th><button class="sort-button" type="button" data-newcomer-sort="inviter">邀請人</button></th>
                 <th><button class="sort-button" type="button" data-newcomer-sort="inviterPhone">邀請人電話</button></th>
-                <th><button class="sort-button" type="button" data-newcomer-sort="followup">陪讀 / 初訓</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="counselor">陪談人</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="counselorPhone">陪談人電話</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="followupPerson">跟進人</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="followupPhone">跟進人電話</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="visitedChurch">曾去過教會</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="visitedWhen">何時</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="visitedPlace">地點</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="reason">第一印象</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="hasFaith">目前有信仰</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="faithDuration">信仰 / 多久</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="faithHelp">信仰幫助</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="lifeDifficulty">生活困難</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="willingReturn">今天開心嗎</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="favoritePart">最喜歡部分</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="wantLearn">想了解 / 學習</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="unclearPart">不太了解</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="needs">幫助 / 代禱</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="willingStudy">接受陪讀</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="beginnerClass">報名初訓班</button></th>
               </tr>
             </thead>
             <tbody id="newcomerRecordTable"></tbody>
@@ -287,6 +309,6 @@
 
     <button id="scrollTopButton" class="scroll-top-button" type="button" aria-label="回到最上方">↑</button>
     <script src="config.js?v=20260602-3"></script>
-    <script src="script.js?v=20260602-12"></script>
+    <script src="script.js?v=20260602-14"></script>
   </body>
 </html>
