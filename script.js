@@ -273,7 +273,7 @@ function selectedRows() {
     const districtOk = district === "all" || row.district === district;
     return periodOk && districtOk && (!query || matchText(row));
   });
-  const services = state.services.filter((row) => selectedStatsDateOk(row.date));
+  const services = rebuildServicesFromNewcomers(newcomers);
   const leaders = state.leaders.filter((row) => {
     const periodOk = selectedStatsDateOk(row.date);
     const districtOk = district === "all" || row.district === district;
