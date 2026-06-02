@@ -449,13 +449,8 @@ textarea {
   grid-row: 2 / 3;
 }
 
-.visits-field {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-}
-
 .reason-field {
-  grid-column: 3 / 6;
+  grid-column: 2 / 6;
   grid-row: 2 / 3;
 }
 
@@ -877,6 +872,32 @@ textarea {
   flex-wrap: wrap;
 }
 
+.district-counts {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  flex: 1 1 520px;
+  flex-wrap: wrap;
+}
+
+.district-counts div {
+  min-width: 116px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.district-counts strong,
+.district-counts span {
+  display: block;
+}
+
+.district-counts span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
 .month-field {
   min-width: 180px;
 }
@@ -1100,6 +1121,28 @@ th {
   font-weight: 800;
 }
 
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sort-button.active::after {
+  content: "↓";
+  font-size: 12px;
+}
+
+.sort-button.active[data-direction="asc"]::after {
+  content: "↑";
+}
+
 tbody tr:hover {
   background: #f8fbff;
 }
@@ -1205,7 +1248,6 @@ tbody tr:hover {
   .ethnicity-field,
   .city-field,
   .residence-district-field,
-  .visits-field,
   .reason-field,
   .willing-return-field,
   .actual-return-field,

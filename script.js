@@ -41,6 +41,7 @@ let selectedCalendarDates = {
 };
 let selectedLeaderMeetingType = "主日聚會";
 let rangeCalendarOpen = false;
+let newcomerSort = { key: "date", direction: "desc" };
 
 const $ = (id) => document.getElementById(id);
 const sheetsConfig = window.CHURCH_SHEETS_CONFIG || {};
@@ -194,13 +195,6 @@ function ageGroup(age) {
   if (numericAge <= 65) return "56~65";
   if (numericAge <= 75) return "66~75";
   return "76歲以上";
-}
-
-function visitGroup(visits) {
-  if (visits <= 1) return "第1次";
-  if (visits === 2) return "第2次";
-  if (visits === 3) return "第3次";
-  return "4次以上";
 }
 
 function normalizeMeetingType(value) {
@@ -621,6 +615,40 @@ function renderSignupLists(newcomers) {
   renderList("beginnerSignupList", newcomers.filter((row) => yes(row.beginnerClass)));
 }
 
+function newcomerSortValue(row, key) {
+  if (key === "age") return ageGroup(row.age);
+  if (key === "followup") return `陪讀:${row.willingStudy || ""} 初訓:${row.beginnerClass || ""}`;
+  return String(row[key] ?? "");
+}
+
+function sortNewcomerRows(rows) {
+  const direction = newcomerSort.direction === "asc" ? 1 : -1;
+  return [...rows].sort((a, b) => {
+    const first = newcomerSortValue(a, newcomerSort.key);
+    const second = newcomerSortValue(b, newcomerSort.key);
+    const compared = first.localeCompare(second, "zh-Hant", { numeric: true });
+    if (compared !== 0) return compared * direction;
+    return String(a.name || "").localeCompare(String(b.name || ""), "zh-Hant");
+  });
+}
+
+function renderNewcomerDistrictCounts(rows) {
+  const el = $("newcomerDistrictCounts");
+  if (!el) return;
+  el.innerHTML = districts.map((district) => {
+    const count = rows.filter((row) => row.district === district).length;
+    return `<div><strong>${escapeHtml(district)}</strong><span>新人 ${count}</span></div>`;
+  }).join("");
+}
+
+function updateNewcomerSortButtons() {
+  document.querySelectorAll("[data-newcomer-sort]").forEach((button) => {
+    const active = button.dataset.newcomerSort === newcomerSort.key;
+    button.classList.toggle("active", active);
+    button.dataset.direction = active ? newcomerSort.direction : "";
+  });
+}
+
 function renderRecords(newcomers, leaders) {
   const newcomerMonth = $("newcomerCalendarMonth")?.value;
   const leaderMonth = $("leaderCalendarMonth")?.value;
@@ -629,7 +657,9 @@ function renderRecords(newcomers, leaders) {
   const visibleNewcomers = selectedCalendarDates.newcomer ? monthNewcomers.filter((row) => row.date === selectedCalendarDates.newcomer) : monthNewcomers;
   const meetingLeaders = selectedLeaderMeetingType ? monthLeaders.filter((row) => normalizeMeetingType(row.meetingType) === selectedLeaderMeetingType) : monthLeaders;
   const visibleLeaders = selectedCalendarDates.leader ? meetingLeaders.filter((row) => row.date === selectedCalendarDates.leader) : meetingLeaders;
-  const sortedNewcomers = [...visibleNewcomers].sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name, "zh-Hant"));
+  renderNewcomerDistrictCounts(monthNewcomers);
+  const sortedNewcomers = sortNewcomerRows(visibleNewcomers);
+  updateNewcomerSortButtons();
   const sortedLeaders = [...visibleLeaders].sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name, "zh-Hant"));
 
   $("newcomerRecordTable").innerHTML = sortedNewcomers.map((row) => `
@@ -640,7 +670,6 @@ function renderRecords(newcomers, leaders) {
       <td>${escapeHtml(row.residence)}</td>
       <td>${escapeHtml(row.ethnicity)}</td>
       <td>${escapeHtml(ageGroup(row.age))}</td>
-      <td>${escapeHtml(row.visits)}</td>
       <td>${escapeHtml(row.reason)}</td>
       <td>${escapeHtml(row.inviter)}</td>
       <td>${escapeHtml(row.inviterPhone || "")}</td>
@@ -861,7 +890,6 @@ function render() {
   barChart("ageChart", countBy(newcomers, (x) => ageGroup(x.age), [...ageGroups, "未填寫"]));
   donutChart("ethnicityChart", countBy(newcomers, (x) => x.ethnicity));
   barChart("residenceChart", countBy(newcomers, (x) => x.residence).slice(0, 7));
-  barChart("visitChart", countBy(newcomers, (x) => visitGroup(Number(x.visits || 1)), ["第1次", "第2次", "第3次", "4次以上"]));
   barChart("reasonChart", countBy(newcomers, (x) => x.reason).slice(0, 7));
   barChart("needChart", countBy(newcomers, (x) => String(x.needs || "").split(";").map((item) => item.trim())).slice(0, 8));
   signupChart("studyChart", "是否願意接受陪讀", willingStudy);
@@ -899,6 +927,20 @@ function setupLeaderCalendarTabs() {
       button.classList.add("active");
       selectedLeaderMeetingType = button.dataset.leaderMeeting;
       selectedCalendarDates.leader = null;
+      render();
+    });
+  });
+}
+
+function setupNewcomerTableSort() {
+  document.querySelectorAll("[data-newcomer-sort]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.newcomerSort;
+      if (newcomerSort.key === key) {
+        newcomerSort.direction = newcomerSort.direction === "asc" ? "desc" : "asc";
+      } else {
+        newcomerSort = { key, direction: key === "date" ? "desc" : "asc" };
+      }
       render();
     });
   });
@@ -1069,7 +1111,7 @@ function csvEscape(value) {
 }
 
 function exportCsv() {
-  const headers = ["date", "name", "age", "ethnicity", "residence", "visits", "reason", "inviter", "inviterPhone", "needs", "willingStudy", "beginnerClass", "district"];
+  const headers = ["date", "name", "age", "ethnicity", "residence", "reason", "inviter", "inviterPhone", "needs", "willingStudy", "beginnerClass", "district"];
   const lines = [headers.join(","), ...state.newcomers.map((row) => headers.map((key) => csvEscape(row[key])).join(","))];
   const blob = new Blob([`\ufeff${lines.join("\n")}`], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -1120,7 +1162,7 @@ function importCsv(file) {
   reader.onload = () => {
     const rows = parseCsv(String(reader.result || ""));
     const headers = rows.shift()?.map((x) => x.trim()) || [];
-    const required = ["date", "name", "age", "ethnicity", "residence", "visits", "reason", "needs", "willingStudy", "beginnerClass", "district"];
+    const required = ["date", "name", "age", "ethnicity", "residence", "reason", "needs", "willingStudy", "beginnerClass", "district"];
     const hasRequired = required.every((key) => headers.includes(key));
     if (!hasRequired) {
       alert(`CSV 欄位需要包含：${required.join(", ")}`);
@@ -1132,7 +1174,6 @@ function importCsv(file) {
         item[key] = row[index] || "";
       });
       item.age = Number(item.age || 0);
-      item.visits = Number(item.visits || 1);
       return item;
     });
     state.services = countBy(state.newcomers, (x) => x.date).map((x) => ({ date: x.label, attendance: x.value }));
@@ -1222,7 +1263,6 @@ function setupCheckins() {
       createdAt: new Date().toISOString(),
       residence: `${data.residenceCity}-${data.residenceDistrict}`,
       age: data.age,
-      visits: Number(data.visits || 1),
     };
     state.newcomers.push(record);
     syncServiceAttendance(data.date);
@@ -1260,6 +1300,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCheckins();
   setupMainTabs();
   setupLeaderCalendarTabs();
+  setupNewcomerTableSort();
   renderOptions();
   setupStatRangeControls();
   setupCalendarMonth();

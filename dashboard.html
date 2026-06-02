@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>主日聚會統計儀表板</title>
-    <link rel="stylesheet" href="styles.css?v=20260602-9" />
+    <link rel="stylesheet" href="styles.css?v=20260602-12" />
   </head>
   <body class="dashboard-page">
     <header class="app-header">
@@ -118,14 +118,6 @@
 
         <article class="panel newcomer-view">
           <div class="panel-heading">
-            <h2>來過幾次</h2>
-            <span>新人次數</span>
-          </div>
-          <div id="visitChart" class="chart"></div>
-        </article>
-
-        <article class="panel newcomer-view">
-          <div class="panel-heading">
             <h2>來教會原因</h2>
             <span>主要原因</span>
           </div>
@@ -146,8 +138,8 @@
             <span>意願統計</span>
           </div>
           <div id="studyChart" class="chart"></div>
-          <div class="signup-lists" aria-label="報名的清單">
-            <h3>報名的清單</h3>
+          <div class="signup-lists" aria-label="陪讀的清單">
+            <h3>陪讀的清單</h3>
             <div class="signup-list-grid">
               <section>
                 <h4>願意陪讀</h4>
@@ -163,8 +155,8 @@
             <span>意願統計</span>
           </div>
           <div id="beginnerChart" class="chart"></div>
-          <div class="signup-lists" aria-label="報名的清單">
-            <h3>報名的清單</h3>
+          <div class="signup-lists" aria-label="初訓的清單">
+            <h3>初訓的清單</h3>
             <div class="signup-list-grid">
               <section>
                 <h4>願意報名初訓班</h4>
@@ -197,6 +189,7 @@
             <label for="newcomerCalendarMonth">新人紀錄月份</label>
             <input id="newcomerCalendarMonth" type="month" />
           </div>
+          <div id="newcomerDistrictCounts" class="district-counts" aria-label="各區新人人數"></div>
         </div>
 
         <div class="calendar-panel">
@@ -223,17 +216,16 @@
           <table>
             <thead>
               <tr>
-                <th>日期</th>
-                <th>姓名</th>
-                <th>教區</th>
-                <th>居住地</th>
-                <th>族群</th>
-                <th>年齡區間</th>
-                <th>來過次數</th>
-                <th>原因 / 狀態</th>
-                <th>邀請人</th>
-                <th>邀請人電話</th>
-                <th>陪讀 / 初訓</th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="date">日期</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="name">姓名</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="district">教區</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="residence">居住地</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="ethnicity">族群</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="age">年齡區間</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="reason">原因 / 狀態</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="inviter">邀請人</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="inviterPhone">邀請人電話</button></th>
+                <th><button class="sort-button" type="button" data-newcomer-sort="followup">陪讀 / 初訓</button></th>
               </tr>
             </thead>
             <tbody id="newcomerRecordTable"></tbody>
@@ -295,6 +287,6 @@
 
     <button id="scrollTopButton" class="scroll-top-button" type="button" aria-label="回到最上方">↑</button>
     <script src="config.js?v=20260602-3"></script>
-    <script src="script.js?v=20260602-9"></script>
+    <script src="script.js?v=20260602-12"></script>
   </body>
 </html>

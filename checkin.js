@@ -289,7 +289,6 @@ function newcomerSummary(record) {
     ${summaryRow("地址", record.address)}
     ${summaryRow("方便聯絡日", record.contactDays)}
     ${summaryRow("方便聯絡時間", record.contactTimes)}
-    ${summaryRow("來過幾次", record.visits)}
     ${summaryRow("來教會原因", record.reason)}
     ${summaryRow("邀請人", record.inviter)}
     ${summaryRow("邀請人電話", record.inviterPhone)}
@@ -409,7 +408,6 @@ function setupCheckins() {
         id: previous?.id || recordId("newcomer"),
         createdAt: previous?.createdAt || new Date().toISOString(),
         residence: `${data.residenceCity}-${data.residenceDistrict}`,
-        visits: Number(data.visits || 1),
       };
       let index;
       if (editTarget?.type === "newcomer") {
