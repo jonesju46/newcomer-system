@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>主日聚會統計儀表板</title>
-    <link rel="stylesheet" href="styles.css?v=20260607-1" />
+    <link rel="stylesheet" href="styles.css?v=20260607-2" />
   </head>
   <body class="dashboard-page">
     <header class="app-header">
@@ -307,8 +307,21 @@
       </section>
     </main>
 
+    <div id="newcomerDetailModal" class="record-modal hidden" role="dialog" aria-modal="true" aria-labelledby="newcomerDetailTitle">
+      <div class="record-modal-card">
+        <div class="record-modal-heading">
+          <div>
+            <span>新人留名紀錄</span>
+            <h2 id="newcomerDetailTitle">新人資料</h2>
+          </div>
+          <button id="closeNewcomerDetail" class="text-button" type="button" aria-label="關閉新人資料">關閉</button>
+        </div>
+        <div id="newcomerDetailContent" class="summary-card detail-summary"></div>
+      </div>
+    </div>
+
     <button id="scrollTopButton" class="scroll-top-button" type="button" aria-label="回到最上方">↑</button>
     <script src="config.js?v=20260602-3"></script>
-    <script src="script.js?v=20260607-1"></script>
+    <script src="script.js?v=20260607-2"></script>
   </body>
 </html>

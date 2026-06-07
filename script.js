@@ -656,6 +656,72 @@ function tableCell(value) {
   return `<td>${escapeHtml(value || "")}</td>`;
 }
 
+function summaryRow(label, value) {
+  return `<div class="summary-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value || "")}</strong></div>`;
+}
+
+function newcomerDetailSummary(record) {
+  const residence = [newcomerResidenceCity(record), newcomerResidenceDistrict(record)].filter(Boolean).join("-");
+  return `
+    ${summaryRow("類型", "新人")}
+    ${summaryRow("填表日期", record.date)}
+    ${summaryRow("姓名", record.name)}
+    ${summaryRow("單位 / 北部教區", record.district)}
+    ${summaryRow("小組", record.group)}
+    ${summaryRow("性別", record.gender)}
+    ${summaryRow("出生日期", record.birthDate)}
+    ${summaryRow("年齡", record.age)}
+    ${summaryRow("族群", record.ethnicity)}
+    ${summaryRow("語言程度", record.languages)}
+    ${summaryRow("教育程度", record.education)}
+    ${summaryRow("職業", record.occupation)}
+    ${summaryRow("宗教信仰", record.religion)}
+    ${summaryRow("聯絡電話", record.phone)}
+    ${summaryRow("電子郵件", record.email)}
+    ${summaryRow("居住地", residence || record.residence)}
+    ${summaryRow("地址", record.address)}
+    ${summaryRow("方便聯絡日期", record.contactDays)}
+    ${summaryRow("方便聯絡時間", record.contactTimes)}
+    ${summaryRow("邀請人", record.inviter)}
+    ${summaryRow("邀請人電話", record.inviterPhone)}
+    ${summaryRow("陪談人", record.counselor)}
+    ${summaryRow("陪談人電話", record.counselorPhone)}
+    ${summaryRow("跟進人", record.followupPerson)}
+    ${summaryRow("跟進人電話", record.followupPhone)}
+    ${summaryRow("曾去過教會", record.visitedChurch)}
+    ${summaryRow("何時", record.visitedWhen)}
+    ${summaryRow("地點", record.visitedPlace)}
+    ${summaryRow("第一印象", record.reason)}
+    ${summaryRow("目前有信仰", record.hasFaith)}
+    ${summaryRow("信仰 / 多久", record.faithDuration)}
+    ${summaryRow("信仰幫助", record.faithHelp)}
+    ${summaryRow("生活困難", record.lifeDifficulty)}
+    ${summaryRow("今天開心嗎", record.willingReturn)}
+    ${summaryRow("最喜歡部分", record.favoritePart)}
+    ${summaryRow("想了解 / 學習", record.wantLearn)}
+    ${summaryRow("不太了解", record.unclearPart)}
+    ${summaryRow("幫助 / 代禱", record.needs)}
+    ${summaryRow("是否願意接受陪讀", record.willingStudy)}
+    ${summaryRow("是否願意報名初訓班", record.beginnerClass)}
+  `;
+}
+
+function openNewcomerDetail(recordId) {
+  const record = state.newcomers.find((row) => row.id === recordId);
+  const modal = $("newcomerDetailModal");
+  if (!record || !modal) return;
+  $("newcomerDetailTitle").textContent = record.name || "新人資料";
+  $("newcomerDetailContent").innerHTML = newcomerDetailSummary(record);
+  modal.classList.remove("hidden");
+  document.body.classList.add("modal-open");
+  $("closeNewcomerDetail")?.focus();
+}
+
+function closeNewcomerDetail() {
+  $("newcomerDetailModal")?.classList.add("hidden");
+  document.body.classList.remove("modal-open");
+}
+
 function updateNewcomerSortButtons() {
   document.querySelectorAll("[data-newcomer-sort]").forEach((button) => {
     const active = button.dataset.newcomerSort === newcomerSort.key;
@@ -678,7 +744,7 @@ function renderRecords(newcomers, leaders) {
   const sortedLeaders = [...visibleLeaders].sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name, "zh-Hant"));
 
   $("newcomerRecordTable").innerHTML = sortedNewcomers.map((row) => `
-    <tr>
+    <tr class="clickable-row" data-newcomer-id="${escapeHtml(row.id || "")}" tabindex="0" aria-label="查看 ${escapeHtml(row.name || "新人")} 的留名紀錄">
       <td><strong>${escapeHtml(row.name || "")}</strong></td>
       ${tableCell(row.date)}
       ${tableCell(row.district)}
@@ -987,6 +1053,27 @@ function setupNewcomerTableSort() {
       }
       render();
     });
+  });
+}
+
+function setupNewcomerRecordDetails() {
+  $("newcomerRecordTable")?.addEventListener("click", (event) => {
+    const row = event.target.closest("[data-newcomer-id]");
+    if (row?.dataset.newcomerId) openNewcomerDetail(row.dataset.newcomerId);
+  });
+  $("newcomerRecordTable")?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const row = event.target.closest("[data-newcomer-id]");
+    if (!row?.dataset.newcomerId) return;
+    event.preventDefault();
+    openNewcomerDetail(row.dataset.newcomerId);
+  });
+  $("closeNewcomerDetail")?.addEventListener("click", closeNewcomerDetail);
+  $("newcomerDetailModal")?.addEventListener("click", (event) => {
+    if (event.target.id === "newcomerDetailModal") closeNewcomerDetail();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeNewcomerDetail();
   });
 }
 
@@ -1345,6 +1432,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMainTabs();
   setupLeaderCalendarTabs();
   setupNewcomerTableSort();
+  setupNewcomerRecordDetails();
   renderOptions();
   setupStatRangeControls();
   setupCalendarMonth();
