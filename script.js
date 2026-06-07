@@ -679,10 +679,10 @@ function renderRecords(newcomers, leaders) {
 
   $("newcomerRecordTable").innerHTML = sortedNewcomers.map((row) => `
     <tr>
+      <td><strong>${escapeHtml(row.name || "")}</strong></td>
       ${tableCell(row.date)}
       ${tableCell(row.district)}
       ${tableCell(row.group)}
-      <td><strong>${escapeHtml(row.name || "")}</strong></td>
       ${tableCell(row.gender)}
       ${tableCell(row.birthDate)}
       ${tableCell(row.age)}
