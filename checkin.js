@@ -290,6 +290,10 @@ function newcomerSummary(record) {
     ${summaryRow("方便聯絡日", record.contactDays)}
     ${summaryRow("方便聯絡時間", record.contactTimes)}
     ${summaryRow("來教會原因", record.reason)}
+    ${summaryRow("目前有宗教信仰", record.hasFaith)}
+    ${summaryRow("宗教信仰為？", record.faithName)}
+    ${summaryRow("信仰多久？", record.faithDuration)}
+    ${summaryRow("信仰幫助", record.faithHelp)}
     ${summaryRow("邀請人", record.inviter)}
     ${summaryRow("邀請人電話", record.inviterPhone)}
     ${summaryRow("陪談人", record.counselor)}

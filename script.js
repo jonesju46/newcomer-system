@@ -693,7 +693,8 @@ function newcomerDetailSummary(record) {
     ${summaryRow("地點", record.visitedPlace)}
     ${summaryRow("第一印象", record.reason)}
     ${summaryRow("目前有信仰", record.hasFaith)}
-    ${summaryRow("信仰 / 多久", record.faithDuration)}
+    ${summaryRow("宗教信仰為？", record.faithName)}
+    ${summaryRow("信仰多久？", record.faithDuration)}
     ${summaryRow("信仰幫助", record.faithHelp)}
     ${summaryRow("生活困難", record.lifeDifficulty)}
     ${summaryRow("今天開心嗎", record.willingReturn)}
@@ -775,6 +776,7 @@ function renderRecords(newcomers, leaders) {
       ${tableCell(row.visitedPlace)}
       ${tableCell(row.reason)}
       ${tableCell(row.hasFaith)}
+      ${tableCell(row.faithName)}
       ${tableCell(row.faithDuration)}
       ${tableCell(row.faithHelp)}
       ${tableCell(row.lifeDifficulty)}
